@@ -1,4 +1,5 @@
 var gulp        = require('gulp');
+var ghPages     = require('gulp-gh-pages');
 var browserify  = require('browserify');
 var babelify    = require('babelify');
 var source      = require('vinyl-source-stream');
@@ -13,7 +14,8 @@ var series      = require('stream-series');
 let paths = {
   index: 'src/index.html',
   appJS: 'src/js/app.js',
-  vendorJS: 'src/vendor/*.js'
+  vendorJS: 'src/vendor/*.js',
+  favicon: 'src/favicon.ico'
 }
 
 
@@ -32,8 +34,11 @@ gulp.task('build', function () {
     .pipe(sourcemaps.write('maps'))
     .pipe(gulp.dest('js', { cwd: __dirname + '/dist/'}));
 
+  var faviconStream = gulp.src(paths.favicon)
+      .pipe(gulp.dest('dist/'));
+
   return gulp.src(paths.index)
-    .pipe(inject(series(vendorStream, appStream), {
+    .pipe(inject(series(vendorStream, appStream, faviconStream), {
       ignorePath: './dist/',
       addRootSlash: false
     }))
@@ -45,6 +50,7 @@ gulp.task('reload', gulp.series('build', function(done) {
   browserSync.reload();
   done();
 }));
+
 
 
 gulp.task('serve', gulp.series('build', function () {
@@ -61,3 +67,9 @@ gulp.task('serve', gulp.series('build', function () {
 }));
 
 gulp.task('default', gulp.series('build', 'serve'));
+
+
+gulp.task('deploy', gulp.series('build', function() {
+  return gulp.src('./dist/**/*')
+    .pipe(ghPages());
+}));

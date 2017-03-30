@@ -8,3 +8,4 @@ dist
 .tmp
 .sass-cache
 **~
+.publish
