@@ -10,11 +10,13 @@ var browserSync = require('browser-sync').create();
 var concat      = require('gulp-concat');
 var inject      = require('gulp-inject');
 var series      = require('stream-series');
+var sass        = require('gulp-sass');
 
 let paths = {
   index: 'src/index.html',
   appJS: 'src/js/app.js',
   vendorJS: 'src/vendor/*.js',
+  styles: 'src/styles/app.scss',
   favicon: 'src/favicon.ico'
 }
 
@@ -37,8 +39,14 @@ gulp.task('build', function () {
   var faviconStream = gulp.src(paths.favicon)
       .pipe(gulp.dest('dist/'));
 
+  var cssStream = gulp.src(paths.styles)
+    .pipe(sourcemaps.init())
+    .pipe(sass().on('error', sass.logError))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest('styles', { cwd: __dirname + '/dist/'}));
+
   return gulp.src(paths.index)
-    .pipe(inject(series(vendorStream, appStream, faviconStream), {
+    .pipe(inject(series(vendorStream, appStream, faviconStream, cssStream), {
       ignorePath: './dist/',
       addRootSlash: false
     }))
@@ -64,6 +72,7 @@ gulp.task('serve', gulp.series('build', function () {
 
   gulp.watch('src/js/*.js', gulp.series('reload'));
   gulp.watch('src/index.html', gulp.series('reload'));
+  gulp.watch('src/styles/**/*.scss', gulp.series('reload'));
 }));
 
 gulp.task('default', gulp.series('build', 'serve'));
