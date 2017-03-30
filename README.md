@@ -13,3 +13,9 @@ yarn
 ```
 gulp
 ```
+
+## Deploy
+
+```
+gulp deploy
+```
