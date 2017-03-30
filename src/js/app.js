@@ -1,0 +1,2 @@
+import t from './test';
+

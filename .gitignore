@@ -1,0 +1,10 @@
+*.swp
+*.swo
+.idea*
+web.config
+node_modules
+bower_components
+dist
+.tmp
+.sass-cache
+**~
