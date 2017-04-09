@@ -10,6 +10,7 @@
     "babelify": "^7.3.0",
     "browser-sync": "^2.18.8",
     "browserify": "^14.1.0",
+    "del": "^2.2.2",
     "gulp": "gulpjs/gulp.git#4.0",
     "gulp-concat": "^2.6.1",
     "gulp-gh-pages": "^0.5.4",

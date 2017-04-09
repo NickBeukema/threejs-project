@@ -11,6 +11,7 @@ var concat      = require('gulp-concat');
 var inject      = require('gulp-inject');
 var series      = require('stream-series');
 var sass        = require('gulp-sass');
+var del         = require('del');
 
 let paths = {
   index: 'src/index.html',
@@ -20,30 +21,74 @@ let paths = {
   favicon: 'src/favicon.ico'
 }
 
-
-gulp.task('build', function () {
-  var vendorStream = gulp.src(paths.vendorJS)
+function vendorStreamProcess() {
+  return gulp.src(paths.vendorJS)
     .pipe(concat('vendor.js'))
     .pipe(gulp.dest('vendor/', { cwd: __dirname + '/dist/'}));
 
-  var appStream = browserify({entries: paths.appJS, debug: true})
+}
+
+function devAppStreamProcess() {
+  return browserify({entries: paths.appJS, debug: true})
     .transform("babelify", { presets: ["es2015"] })
     .bundle()
     .pipe(source('app.js'))
     .pipe(buffer())
-    //.pipe(sourcemaps.init())
-    //.pipe(uglify())
-    //.pipe(sourcemaps.write('maps'))
     .pipe(gulp.dest('js', { cwd: __dirname + '/dist/'}));
+}
 
-  var faviconStream = gulp.src(paths.favicon)
+function prodAppStreamProcess() {
+  return browserify({entries: paths.appJS, debug: true})
+    .transform("babelify", { presets: ["es2015"] })
+    .bundle()
+    .pipe(source('app.js'))
+    .pipe(buffer())
+    .pipe(sourcemaps.init())
+    .pipe(uglify())
+    .pipe(sourcemaps.write('maps'))
+    .pipe(gulp.dest('js', { cwd: __dirname + '/dist/'}));
+}
+
+function faviconStreamProcess() {
+  return gulp.src(paths.favicon)
       .pipe(gulp.dest('dist/'));
+}
 
-  var cssStream = gulp.src(paths.styles)
+function cssStreamProcess() {
+  return gulp.src(paths.styles)
     .pipe(sourcemaps.init())
     .pipe(sass().on('error', sass.logError))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest('styles', { cwd: __dirname + '/dist/'}));
+
+}
+
+gulp.task('prodBuild', function () {
+
+  del.sync(['dist']);
+
+  var vendorStream = vendorStreamProcess();
+  var appStream = prodAppStreamProcess();
+  var faviconStream = faviconStreamProcess();
+  var cssStream = cssStreamProcess();
+
+  return gulp.src(paths.index)
+    .pipe(inject(series(vendorStream, appStream, faviconStream, cssStream), {
+      ignorePath: './dist/',
+      addRootSlash: false
+    }))
+    .pipe(gulp.dest('./', { cwd: __dirname + '/dist/'}));
+
+});
+
+
+gulp.task('build', function () {
+  del.sync(['dist']);
+
+  var vendorStream = vendorStreamProcess();
+  var appStream = devAppStreamProcess();
+  var faviconStream = faviconStreamProcess();
+  var cssStream = cssStreamProcess();
 
   return gulp.src(paths.index)
     .pipe(inject(series(vendorStream, appStream, faviconStream, cssStream), {
@@ -78,7 +123,7 @@ gulp.task('serve', gulp.series('build', function () {
 gulp.task('default', gulp.series('build', 'serve'));
 
 
-gulp.task('deploy', gulp.series('build', function() {
+gulp.task('deploy', gulp.series('prodBuild', function() {
   return gulp.src('./dist/**/*')
     .pipe(ghPages());
 }));
