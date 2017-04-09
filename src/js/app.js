@@ -15,7 +15,7 @@ function init() {
   globals = { scene, camera, renderer };
 
   gameEngine = new GameEngine();
-  gameView = new GameView(globals);
+  gameView = new GameView(globals, gameEngine);
 
   render();
 }

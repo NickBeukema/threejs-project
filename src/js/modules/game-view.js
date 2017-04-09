@@ -1,8 +1,10 @@
 export default class GameView {
-  constructor(globals) {
+  constructor(globals, gameEngine) {
     this.scene = globals.scene;
     this.camera = globals.camera;
     this.renderer = globals.renderer;
+
+    this.gameEngine = gameEngine;
 
     this.setupLight();
     this.setupCube();
@@ -29,7 +31,8 @@ export default class GameView {
   }
 
   renderLoop() {
-    this.cube.rotation.x += 0.01;
-    this.cube.rotation.y += 0.01;
+    this.gameEngine.gameLoop();
+    this.cube.rotation.x = this.gameEngine.shapes[0].rotation.x;
+    this.cube.rotation.y = this.gameEngine.shapes[0].rotation.y;
   }
 }
