@@ -7,9 +7,13 @@ export default class GameView {
     this.gameEngine = gameEngine;
 
     this.setupLight();
-    this.setupCube();
 
-    this.camera.position.z = 4;
+    var grid = new THREE.GridHelper(40, 10);
+    this.scene.add(grid);
+
+    this.camera.position.z = 100;
+    this.camera.position.y = 50;
+    this.camera.lookAt(this.scene.position)
   }
 
   setupLight() {
@@ -22,17 +26,7 @@ export default class GameView {
     this.scene.add(lightSource);
   }
 
-  setupCube() {
-    let geometry = new THREE.BoxGeometry(1,1,1);
-    let material = new THREE.MeshPhongMaterial({color: 0x00ff00, specular: 0x555555, shininess: 30 });
-    this.cube = new THREE.Mesh(geometry, material);
-
-    this.scene.add(this.cube);
-  }
-
   renderLoop() {
     this.gameEngine.gameLoop();
-    this.cube.rotation.x = this.gameEngine.shapes[0].rotation.x;
-    this.cube.rotation.y = this.gameEngine.shapes[0].rotation.y;
   }
 }

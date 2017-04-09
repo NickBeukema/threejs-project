@@ -1,31 +1,20 @@
 import Player from './player';
+import { xPositive, xNegative } from './constants';
 
 export default class GameEngine {
 
   constructor() {
     this.state = {};
     this.initializePlayers();
-    this.initializeShapes();
   }
 
   initializePlayers() {
-    this.state.players = [
-      new Player({type: 'human'}), new Player({type: 'computer'})
-    ];
-  }
-
-  initializeShapes() {
-    this.shapes = [
-      { rotation: {
-          x: 0,
-          y: 0
-        }
-      }
-    ]
+    this.myPlayer = new Player({type: 'human', direction: xPositive});
+    this.computer = new Player({type: 'computer', direction: xNegative});
+    this.state.players = [ this.myPlayer, this.computer ];
   }
 
   gameLoop() {
-    this.shapes[0].rotation.x += 0.01;
-    this.shapes[0].rotation.y += 0.01;
+    this.state.players.forEach(player => player.runLoop());
   }
 }
