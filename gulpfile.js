@@ -31,9 +31,9 @@ gulp.task('build', function () {
     .bundle()
     .pipe(source('app.js'))
     .pipe(buffer())
-    .pipe(sourcemaps.init())
-    .pipe(uglify())
-    .pipe(sourcemaps.write('maps'))
+    //.pipe(sourcemaps.init())
+    //.pipe(uglify())
+    //.pipe(sourcemaps.write('maps'))
     .pipe(gulp.dest('js', { cwd: __dirname + '/dist/'}));
 
   var faviconStream = gulp.src(paths.favicon)
@@ -70,7 +70,7 @@ gulp.task('serve', gulp.series('build', function () {
   });
 
 
-  gulp.watch('src/js/*.js', gulp.series('reload'));
+  gulp.watch('src/js/**/*.js', gulp.series('reload'));
   gulp.watch('src/index.html', gulp.series('reload'));
   gulp.watch('src/styles/**/*.scss', gulp.series('reload'));
 }));
