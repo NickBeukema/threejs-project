@@ -5,6 +5,7 @@ export default class Player {
   constructor(args) {
     this.type = args.type;
     this.direction = args.direction;
+    this.colliderList = args.colliderList;
 
     this.setupGameState();
   }
@@ -12,7 +13,12 @@ export default class Player {
   spawnMinion(index) {
     if(this.money >= this.minionCost) {
       this.money -= this.minionCost;
-      let minion = new Minion({direction: this.direction, startingZ: index});
+
+      let minion = new Minion({
+        direction: this.direction,
+        startingZ: index,
+        colliderList: this.colliderList
+      });
 
       this.minions.push(minion);
       return minion;
