@@ -5,8 +5,18 @@
   left: 0;
   top: 0;
 
+  cursor: default;
+
   padding: 10px;
 
   font-family: 'Press Start 2P', cursive;
   color: white;
+
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
 }

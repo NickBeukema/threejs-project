@@ -12,8 +12,7 @@ export default class Minion {
     let material = new THREE.MeshPhongMaterial({color: 0x00ff00, specular: 0x555555, shininess: 30 });
     this.viewObj = new THREE.Mesh(geometry, material);
 
-
-    this.viewObj.position.z = (startingZ * 10) - 35;
+    this.viewObj.position.z = (startingZ * 9) - 32;
     this.viewObj.position.x = -38 * this.direction;
     //this.viewObj.position.z = 0;
 

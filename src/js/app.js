@@ -20,20 +20,22 @@ function init() {
   gameEngine = new GameEngine();
   gameView = new GameView(globals, gameEngine);
 
-
   scoreText = document.getElementById('score');
   moneyText = document.getElementById('money');
 
-
   window.addEventListener('click', () => {
-    let minion = gameEngine.myPlayer.spawnMinion();
-    if(minion) {
-      scene.add(minion.viewObj);
+    let index = gameView.getCurrentPanelIndex();
+    if(index >= 0) {
+
+      let minion = gameEngine.myPlayer.spawnMinion(index);
+      if(minion) {
+        scene.add(minion.viewObj);
+      }
     }
   });
 
   window.addEventListener('keypress', () => {
-    let minion = gameEngine.computer.spawnMinion();
+    let minion = gameEngine.computer.spawnMinion(3);
     if(minion) {
       scene.add(minion.viewObj);
     }

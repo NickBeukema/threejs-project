@@ -9,11 +9,10 @@ export default class Player {
     this.setupGameState();
   }
 
-  spawnMinion() {
+  spawnMinion(index) {
     if(this.money >= this.minionCost) {
       this.money -= this.minionCost;
-      let minion = new Minion({direction: this.direction, startingZ: this.tmp});
-      this.tmp += 1;
+      let minion = new Minion({direction: this.direction, startingZ: index});
 
       this.minions.push(minion);
       return minion;
@@ -31,6 +30,5 @@ export default class Player {
     this.score = 0;
     this.money = 200;
     this.minionCost = 20;
-    this.tmp = 0;
   }
 }
