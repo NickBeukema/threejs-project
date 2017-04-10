@@ -42,8 +42,7 @@ export default class Minion {
     this.colliderList.push(this.collider);
 
     this.collider.addEventListener('contactEnter', (otherCollider) => {
-      console.log(otherCollider);
-      console.log("collision!");
+      this.speed = 0; 
     });
 
   }
@@ -51,8 +50,6 @@ export default class Minion {
   runLoop() {
     this.viewObj.position.x += (this.speed * this.direction);
 
-    this.hitBox.geometry.computeBoundingBox()
-    let box3 = this.hitBox.geometry.boundingBox.clone();
-    this.collider = new THREEx.ColliderBox3(this.hitBox, box3);
+    this.collider.update();
   }
 }
