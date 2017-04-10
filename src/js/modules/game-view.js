@@ -1,3 +1,5 @@
+import { gridWidth, gridSubDiv } from './constants';
+
 export default class GameView {
   constructor(globals, gameEngine) {
     this.scene = globals.scene;
@@ -33,8 +35,6 @@ export default class GameView {
   }
 
   setupGrid() {
-    let gridWidth = 70;
-    let gridSubDiv = 8;
     var grid = new THREE.GridHelper(gridWidth, gridSubDiv);
     this.scene.add(grid);
 

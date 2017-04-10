@@ -28,7 +28,16 @@ export default class Player {
   }
 
   runLoop() {
-    this.minions.forEach(minion => minion.runLoop());
+    this.minions.forEach((minion, index) => {
+      minion.runLoop();
+
+      console.log(minion.viewObj.position.x);
+      if(minion.viewObj.position.x > 35) {
+        this.score += 20;
+        this.money += 30;
+        this.minions.splice(index, 1);
+      }
+    });
   }
 
   setupGameState() {
