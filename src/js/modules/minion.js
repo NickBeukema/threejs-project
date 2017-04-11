@@ -4,6 +4,7 @@ export default class Minion {
     this.colliderList = args.colliderList;
     this.id = args.id;
     this.playerId = args.playerId;
+    this.player = args.player;
 
     this.maxHealth = 10;
     this.health = this.maxHealth;
@@ -15,6 +16,11 @@ export default class Minion {
       lastTimeStamp: null,
       attackTime: 0
     };
+
+    this.killReward = {
+      money: 15,
+      score: 10
+    }
 
     this.destroy = false;
     this.attack = false;
@@ -103,6 +109,16 @@ export default class Minion {
   }
 
   runLoop(timestamp) {
+    this.attackProcedure(timestamp);
+    this.viewObj.position.x += (this.speed * this.direction);
+
+    this.collider.update();
+    this.updateHealthBar();
+  }
+
+  attackProcedure(timestamp) {
+    if(this.health <= 0) { return; }
+
     if(this.attackProperties.lastTimeStamp != null && this.attack) {
       let delta = timestamp - this.attackProperties.lastTimeStamp;
       this.attackProperties.attackTime += delta;
@@ -115,10 +131,6 @@ export default class Minion {
     }
 
     this.attackProperties.lastTimeStamp = timestamp;
-    this.viewObj.position.x += (this.speed * this.direction);
-
-    this.collider.update();
-    this.updateHealthBar();
   }
 
   attackLoop() {
@@ -129,6 +141,8 @@ export default class Minion {
 
     console.log(this.id, this.health);
     if(this.currentTarget.health <= 0) {
+      this.player.processReward(this.currentTarget.killReward);
+
       this.currentTarget.attack = false;
       this.currentTarget.destroy = true;
       this.currentTarget = null;

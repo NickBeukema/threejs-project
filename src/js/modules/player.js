@@ -22,7 +22,8 @@ export default class Player {
         playerId: this.id,
         direction: this.direction,
         startingZ: index,
-        colliderList: this.colliderList
+        colliderList: this.colliderList,
+        player: this
       });
 
       this.minions.push(minion);
@@ -30,6 +31,13 @@ export default class Player {
     } else {
       return null;
     }
+  }
+
+  processReward(reward) {
+    let t = this;
+    Object.keys(reward).forEach((key) => {
+      t[key] += reward[key];
+    });
   }
 
   runLoop(timestamp) {
