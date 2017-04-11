@@ -35,11 +35,9 @@ export default class Player {
       minion.runLoop(timestamp);
       if(minion.destroy) {
         this.scene.remove(minion.viewObj);
-        minion.collider.removeEventListener("contactEnter");
-        minion.collider.removeEventListener("contactRemoved");
 
         console.log(index, this.findColliderIndex(minion.collider.id));
-        this.colliderList.splice(this.findColliderIndex(minion.collider.id, 1));
+        this.colliderList.splice(this.findColliderIndex(minion.collider.id), 1);
 
         this.minions.splice(index, 1);
       }
