@@ -4,6 +4,7 @@ export default class Player {
 
   constructor(args) {
     this.type = args.type;
+    this.id = args.id;
     this.direction = args.direction;
     this.colliderList = args.colliderList;
     this.scene = args.scene;
@@ -18,6 +19,7 @@ export default class Player {
 
       let minion = new Minion({
         id: this.minionId++,
+        playerId: this.id,
         direction: this.direction,
         startingZ: index,
         colliderList: this.colliderList
@@ -39,7 +41,7 @@ export default class Player {
         console.log(index, this.findColliderIndex(minion.collider.id));
         this.colliderList.splice(this.findColliderIndex(minion.collider.id), 1);
 
-        this.minions.splice(index, 1);
+        let a = this.minions.splice(index, 1);
       }
     }); 
   }

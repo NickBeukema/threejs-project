@@ -6,7 +6,9 @@ export default class GameEngine {
     this.state = {};
     this.scene = args.scene;
     this.colliderSystem = new THREEx.ColliderSystem();
-    this.colliderList = []
+    this.colliderList = [];
+
+    this.playerId = 0;
 
     this.initializePlayers();
   }
@@ -16,14 +18,16 @@ export default class GameEngine {
       type: 'human',
       direction: xPositive,
       colliderList: this.colliderList,
-      scene:this.scene
+      scene:this.scene,
+      id: this.playerId++
     });
 
     this.computer = new Player({
       type: 'computer',
       direction: xNegative,
       colliderList: this.colliderList,
-      scene: this.scene
+      scene: this.scene,
+      id: this.playerId++
     });
 
     this.state.players = [ this.myPlayer, this.computer ];
