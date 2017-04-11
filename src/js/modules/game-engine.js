@@ -29,7 +29,7 @@ export default class GameEngine {
   }
 
   gameLoop() {
-    this.colliderSystem.computeAndNotify(this.colliderList);
     this.state.players.forEach(player => player.runLoop());
+    this.colliderSystem.computeAndNotify(this.colliderList);
   }
 }
