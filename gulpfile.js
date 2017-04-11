@@ -13,7 +13,7 @@ var series      = require('stream-series');
 var sass        = require('gulp-sass');
 var del         = require('del');
 
-let paths = {
+var paths = {
   index: 'src/index.html',
   appJS: 'src/js/app.js',
   vendorJS: 'src/vendor/*.js',
