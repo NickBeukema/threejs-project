@@ -109,9 +109,13 @@ gulp.task('reload', gulp.series('build', function(done) {
 gulp.task('serve', gulp.series('build', function () {
 
   browserSync.init({
+    ui: {
+      port: 4002
+    },
     server: {
       baseDir: "dist"
-    }
+    },
+    port: 4001
   });
 
 
