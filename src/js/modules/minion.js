@@ -10,7 +10,7 @@ export default class Minion {
     this.health = this.maxHealth;
     this.attackStrength = 3;
     this.attackSpeed = 500;
-    this.defaultSpeed = 0.1;
+    this.defaultSpeed = 0.5;
     this.speed = this.defaultSpeed;
     this.attackProperties = {
       lastTimeStamp: null,
@@ -48,10 +48,11 @@ export default class Minion {
     this.viewObj.add(this.healthBar);
 
     this.viewObj.position.z = (startingZ * 9) - 32;
-    this.viewObj.position.x = -38 * this.direction;
+    this.viewObj.position.x = -35 * this.direction;
     this.viewObj.position.y = 2;
 
-    this.hitBox.userData.minion = this;
+    this.hitBox.userData.object = this;
+    this.hitBox.userData.player = this.player;
   }
 
   initializeHealthBar() {
@@ -77,15 +78,17 @@ export default class Minion {
 
   registerCollision() {
     this.hitBox.geometry.computeBoundingBox()
-    let box3 = this.hitBox.geometry.boundingBox.clone(); 
+    let box3 = this.hitBox.geometry.boundingBox.clone();
     this.collider = new THREEx.ColliderBox3(this.hitBox, box3);
 
     this.colliderList.push(this.collider);
 
     this.collider.addEventListener('contactEnter', (otherCollider) => {
+      if(otherCollider.object3d.userData.player.id === this.playerId) { return; }
+
       this.speed = 0;
       this.attack = true;
-      this.currentTarget = otherCollider.object3d.userData.minion;
+      this.currentTarget = otherCollider.object3d.userData.object;
     });
 
     this.collider.addEventListener('contactRemoved', (otherCollider) => {

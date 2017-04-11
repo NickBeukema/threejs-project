@@ -1,4 +1,5 @@
 import Minion from './minion';
+import Base from './base';
 
 export default class Player {
 
@@ -11,9 +12,20 @@ export default class Player {
     this.minionId = 0;
 
     this.setupGameState();
+    this.spawnBase();
   }
 
-  spawnMinion(index) { 
+  spawnBase() {
+    this.base = new Base({
+      direction: this.direction,
+      colliderList: this.colliderList,
+      player: this
+    });
+
+    this.scene.add(this.base.viewObj);
+  }
+
+  spawnMinion(index) {
     if(this.money >= this.minionCost) {
       this.money -= this.minionCost;
 
@@ -27,7 +39,7 @@ export default class Player {
       });
 
       this.minions.push(minion);
-      return minion;
+      this.scene.add(minion.viewObj);
     } else {
       return null;
     }
@@ -41,17 +53,26 @@ export default class Player {
   }
 
   runLoop(timestamp) {
+    this.base.runLoop();
+    if(this.base.destroy) { this.destroyBase(); }
+
     this.minions.forEach((minion, index) => {
       minion.runLoop(timestamp);
-      if(minion.destroy) {
-        this.scene.remove(minion.viewObj);
+      if(minion.destroy) { this.destroyMinion(minion, index); }
+    });
+  }
 
-        console.log(index, this.findColliderIndex(minion.collider.id));
-        this.colliderList.splice(this.findColliderIndex(minion.collider.id), 1);
+  destroyMinion(minion, index) {
+    this.scene.remove(minion.viewObj);
 
-        let a = this.minions.splice(index, 1);
-      }
-    }); 
+    this.colliderList.splice(this.findColliderIndex(minion.collider.id), 1);
+
+    this.minions.splice(index, 1);
+  }
+
+  destroyBase() {
+    this.scene.remove(this.base.viewObj);
+    this.colliderList.splice(this.findColliderIndex(this.base.collider.id), 1);
   }
 
   findColliderIndex(id) {
