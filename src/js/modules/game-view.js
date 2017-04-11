@@ -99,8 +99,8 @@ export default class GameView {
     });
   }
 
-  renderLoop() {
+  renderLoop(timestamp) {
     this.checkGridIntersections();
-    this.gameEngine.gameLoop();
+    this.gameEngine.gameLoop(timestamp);
   }
 }

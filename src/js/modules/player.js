@@ -6,15 +6,18 @@ export default class Player {
     this.type = args.type;
     this.direction = args.direction;
     this.colliderList = args.colliderList;
+    this.scene = args.scene;
+    this.minionId = 0;
 
     this.setupGameState();
   }
 
-  spawnMinion(index) {
+  spawnMinion(index) { 
     if(this.money >= this.minionCost) {
       this.money -= this.minionCost;
 
       let minion = new Minion({
+        id: this.minionId++,
         direction: this.direction,
         startingZ: index,
         colliderList: this.colliderList
@@ -27,16 +30,38 @@ export default class Player {
     }
   }
 
-  runLoop() {
+  runLoop(timestamp) {
     this.minions.forEach((minion, index) => {
-      minion.runLoop();
-    });
+      minion.runLoop(timestamp);
+      if(minion.destroy) {
+        this.scene.remove(minion.viewObj);
+        minion.collider.removeEventListener("contactEnter");
+        minion.collider.removeEventListener("contactRemoved");
+
+        console.log(index, this.findColliderIndex(minion.collider.id));
+        this.colliderList.splice(this.findColliderIndex(minion.collider.id, 1));
+
+        this.minions.splice(index, 1);
+      }
+    }); 
+  }
+
+  findColliderIndex(id) {
+    let index = -1;
+
+    for (var i = 0; i < this.colliderList.length; i++) {
+      if(this.colliderList[i].id === id) {
+        index = i;
+      }
+    }
+
+    return index;
   }
 
   setupGameState() {
     this.minions = [];
     this.score = 0;
-    this.money = 200;
+    this.money = 400;
     this.minionCost = 20;
   }
 }

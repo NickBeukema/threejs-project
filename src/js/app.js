@@ -17,7 +17,7 @@ function init() {
   let { scene, camera, renderer } = setupScreenView();
   globals = { scene, camera, renderer };
 
-  gameEngine = new GameEngine();
+  gameEngine = new GameEngine(globals);
   gameView = new GameView(globals, gameEngine);
 
   scoreText = document.getElementById('score');
@@ -45,9 +45,9 @@ function init() {
 }
 
 
-function render() {
+function render(timestamp) {
   requestAnimationFrame(render);
-  gameView.renderLoop();
+  gameView.renderLoop(timestamp);
 
   updateUI();
 
