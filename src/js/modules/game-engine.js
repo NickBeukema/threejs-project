@@ -34,14 +34,14 @@ export default class GameEngine {
       id: this.playerId++
     });
 
-    //this.AI = new AI({
-      //player: this.computer,
-      //personality: "defensiveAI"
-    //});
+    this.AI = new AI({
+      player: this.computer,
+      personality: "defensiveAI"
+    });
 
-     //this.playerAI = new AI({
-       //player: this.myPlayer
-     //});
+     // this.playerAI = new AI({
+     //   player: this.myPlayer
+     // });
 
 
     this.state.players = [ this.myPlayer, this.computer ];
