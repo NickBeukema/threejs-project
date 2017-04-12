@@ -1,0 +1,25 @@
+.modal {
+  display: none;
+  position: absolute;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  background-color: rgba(255, 255, 255, 0.5);
+
+  &--visible {
+    display: block !important;
+  }
+
+  &__section {
+    display: none;
+  }
+
+  &__content {
+    margin-top: 30vh;
+    text-align: center;
+    margin-left: 20%;
+    margin-right: 20%;
+  }
+}
