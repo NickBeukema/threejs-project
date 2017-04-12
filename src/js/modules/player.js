@@ -53,8 +53,11 @@ export default class Player {
   }
 
   runLoop(timestamp) {
-    this.base.runLoop();
-    if(this.base.destroy) { this.destroyBase(); }
+    if(this.base !== null) { 
+      this.base.runLoop();
+      if(this.base.destroy) { this.destroyBase(); } 
+    }    
+    
 
     this.minions.forEach((minion, index) => {
       minion.runLoop(timestamp);
@@ -73,6 +76,7 @@ export default class Player {
   destroyBase() {
     this.scene.remove(this.base.viewObj);
     this.colliderList.splice(this.findColliderIndex(this.base.collider.id), 1);
+    this.base = null;
   }
 
   findColliderIndex(id) {
