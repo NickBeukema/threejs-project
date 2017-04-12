@@ -1,4 +1,9 @@
-import { gridWidth, gridSubDiv } from './constants';
+import { gridWidth, gridLength, gridSubDiv } from './constants';
+
+const grassTexture = new THREE.ImageUtils.loadTexture("textures/stone.jpg");
+grassTexture.repeat.set(7, 7);     // repeat the texture 6x in both s- and t- directions
+grassTexture.wrapS = THREE.RepeatWrapping;
+grassTexture.wrapT = THREE.RepeatWrapping;
 
 export default class GameView {
   constructor(globals, gameEngine) {
@@ -11,10 +16,10 @@ export default class GameView {
     this.setupGrid();
     this.setupLight();
 
-    this.mouse = { x: 0, y: 0 };
+    this.mouse = { x: 0, ady: 0 };
 
-    this.camera.position.z = 50;
-    this.camera.position.y = 50;
+    this.camera.position.z = 200;
+    this.camera.position.y = 100;
     this.camera.lookAt(this.scene.position);
 
 
@@ -25,7 +30,7 @@ export default class GameView {
   }
 
   setupLight() {
-    let lightAmbient = new THREE.AmbientLight(0x666666);
+    let lightAmbient = new THREE.AmbientLight(0x666666, 3);
     let lightSource = new THREE.PointLight(0x888888);
 
     lightSource.position.set(3, 3, 3);
@@ -41,15 +46,15 @@ export default class GameView {
     this.gridPanels = {};
 
     let panelLength = gridWidth / gridSubDiv;
-    let zPos = -30.6;
+    let zPos = ((gridWidth / 2) - panelLength / 2) * -1;
 
-    for(let i = 0; i < 8; i++) {
+    for(let i = 0; i < gridSubDiv; i++) {
       var planeGeometry = new THREE.PlaneGeometry(gridWidth, panelLength);
-      var planeMaterial = new THREE.MeshBasicMaterial({color: 0x666666});
-      var plane = new THREE.Mesh(planeGeometry,planeMaterial);
+      var planeMaterial = new THREE.MeshBasicMaterial({map: grassTexture});
+      var plane = new THREE.Mesh(planeGeometry, planeMaterial);
       plane.rotation.x = -0.5 * Math.PI;
       plane.position.z = zPos;
-      plane.position.y = -0.1;
+      plane.position.y = -0.2;
       this.scene.add(plane);
       this.gridPanels[i] = plane;
 
@@ -82,7 +87,7 @@ export default class GameView {
 
     let planes = Object.values(this.gridPanels);
 
-    for(let i = 0; i < 8; i++) {
+    for(let i = 0; i < gridSubDiv; i++) {
       if(this.currentHoveredPanel === planes[i]) {
         return i;
       }

@@ -1,3 +1,5 @@
+import { gridWidth, gridLength, gridSubDiv } from './constants';
+
 export default class Minion {
   constructor(args) {
     this.direction = args.direction;
@@ -41,14 +43,16 @@ export default class Minion {
     let hitMesh = new THREE.Mesh(hitGeometry, hitMaterial);
 
     this.healthBar = this.initializeHealthBar();
-    this.hitBox = hitMesh;
+    this.hitBox = hitMesh; 
 
     this.viewObj.add(shapeMesh);
     this.viewObj.add(hitMesh);
     this.viewObj.add(this.healthBar);
 
-    this.viewObj.position.z = (startingZ * 9) - 32;
-    this.viewObj.position.x = -38 * this.direction;
+    let z = ((startingZ * (gridWidth / gridSubDiv)) - (gridWidth / 2)) + (gridWidth / gridSubDiv / 2);
+    let x = (gridWidth / 2) * -this.direction;
+    this.viewObj.position.z = z;
+    this.viewObj.position.x = x;
     this.viewObj.position.y = 2;
 
     this.hitBox.userData.minion = this;
@@ -56,12 +60,12 @@ export default class Minion {
 
   initializeHealthBar() {
     this._healthBarWidth = 2;
-    let fullHealthBarGeometry = new THREE.BoxGeometry(this._healthBarWidth, 0.1, 0.1);
+    let fullHealthBarGeometry = new THREE.BoxGeometry(this._healthBarWidth, 0.3, 0.3);
     let fullHealthBarMaterial = new THREE.MeshBasicMaterial({color: 0x00ff00});
     let fullHealthBarMesh = new THREE.Mesh(fullHealthBarGeometry, fullHealthBarMaterial);
     fullHealthBarMesh.name = "FullHealthBar";
 
-    let emptyHealthBarGeometry = new THREE.BoxGeometry(this._healthBarWidth, 0.09, 0.09);
+    let emptyHealthBarGeometry = new THREE.BoxGeometry(this._healthBarWidth, 0.2, 0.2);
     let emptyHealthBarMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
     let emptyHealthBarMesh = new THREE.Mesh(emptyHealthBarGeometry, emptyHealthBarMaterial);
     emptyHealthBarMesh.name = "EmptyHealthBar";
