@@ -36,11 +36,10 @@ export default class AI {
 
     opponents.forEach((enemy) => {
       map[enemy.startingZ]--;
-     
     });
 
     this.player.minions.forEach((minion) => {
-        map[minion.startingZ]++
+      map[minion.startingZ]++
     });
 
     let spawnIndex = -1;

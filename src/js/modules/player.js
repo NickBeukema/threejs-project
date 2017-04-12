@@ -47,8 +47,6 @@ export default class Player {
         minion.viewObj.add(obj);
         this.scene.add(minion.viewObj);
       });
-    } else {
-      return null;
     }
   }
 
@@ -63,8 +61,7 @@ export default class Player {
     if(this.base !== null) { 
       this.base.runLoop();
       if(this.base.destroy) { this.destroyBase(); } 
-    }    
-    
+    }
 
     this.minions.forEach((minion, index) => {
       minion.runLoop(timestamp);
@@ -84,6 +81,7 @@ export default class Player {
     this.scene.remove(this.base.viewObj);
     this.colliderList.splice(this.findColliderIndex(this.base.collider.id), 1);
     this.base = null;
+    this.lost = true;
   }
 
   findColliderIndex(id) {
@@ -98,10 +96,26 @@ export default class Player {
     return index;
   }
 
+  reset() {
+    this.minions.forEach(minion => {
+      this.scene.remove(minion.viewObj);
+    });
+
+    if(this.base) {
+      this.scene.remove(this.base.viewObj);
+      this.base = null;
+    }
+
+    this.spawnBase();
+    this.setupGameState();
+  }
+
+
   setupGameState() {
     this.minions = [];
     this.score = 0;
-    this.money = 40000;
+    this.money = 400;
     this.minionCost = 20;
+    this.lost = false;
   }
 }

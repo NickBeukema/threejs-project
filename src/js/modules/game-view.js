@@ -1,4 +1,5 @@
 import { gridWidth, gridLength, gridSubDiv } from './constants';
+import { bindButtons } from './menu-screen';
 
 const planeTexture = new THREE.TextureLoader().load("textures/stone.jpg");
 planeTexture.repeat.set(10,10);
@@ -30,6 +31,7 @@ export default class GameView {
     this.currentHoveredPanel = null;
 
     this.setupMouseEvent();
+    bindButtons(this.gameEngine);
   }
 
   setupLight() {
