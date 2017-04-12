@@ -26,19 +26,12 @@ function init() {
   window.addEventListener('click', () => {
     let index = gameView.getCurrentPanelIndex();
     if(index >= 0) {
-
-      let minion = gameEngine.myPlayer.spawnMinion(index);
-      if(minion) {
-        scene.add(minion.viewObj);
-      }
+      gameEngine.myPlayer.spawnMinion(index);
     }
   });
 
   window.addEventListener('keypress', () => {
-    let minion = gameEngine.computer.spawnMinion(3);
-    if(minion) {
-      scene.add(minion.viewObj);
-    }
+    gameEngine.computer.spawnMinion(3);
   });
 
   render();
