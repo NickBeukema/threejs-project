@@ -1,5 +1,6 @@
 import Player from './player';
-import { xPositive, xNegative } from './constants';
+import AI from './ai-player';
+import { xPositive, xNegative, gridSubDiv } from './constants';
 
 export default class GameEngine {
   constructor(args) {
@@ -30,10 +31,26 @@ export default class GameEngine {
       id: this.playerId++
     });
 
+    this.AI = new AI({
+      player: this.computer
+    });
+
+    this.playerAI = new AI({
+      player: this.myPlayer
+    });
+
+
     this.state.players = [ this.myPlayer, this.computer ];
   }
 
   gameLoop(timestamp) {
+    if(this.AI) {
+      this.AI.runLoop(timestamp);
+    }
+
+    if(this.playerAI) {
+      this.playerAI.runLoop(timestamp);
+    }
     this.state.players.forEach(player => player.runLoop(timestamp));
     this.colliderSystem.computeAndNotify(this.colliderList);
   }

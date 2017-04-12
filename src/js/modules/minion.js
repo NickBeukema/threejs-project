@@ -43,11 +43,15 @@ export default class Minion {
     let hitMesh = new THREE.Mesh(hitGeometry, hitMaterial);
 
     this.healthBar = this.initializeHealthBar();
-    this.hitBox = hitMesh; 
 
-    this.viewObj.add(shapeMesh);
-    this.viewObj.add(hitMesh);
-    this.viewObj.add(this.healthBar);
+    //this.viewObj.add(shapeMesh);
+    //this.viewObj.add(hitMesh);
+    //this.viewObj.add(this.healthBar);
+
+    hitMesh.add(this.healthBar);
+    hitMesh.add(shapeMesh);
+    this.viewObj = hitMesh;
+    this.hitBox = this.viewObj;
 
     let z = ((startingZ * (gridWidth / gridSubDiv)) - (gridWidth / 2)) + (gridWidth / gridSubDiv / 2);
     let x = (gridWidth / 2) * -this.direction;
@@ -80,6 +84,10 @@ export default class Minion {
     return healthBarGroup;
   }
 
+  isObjectLoaded(obj) {
+    return (obj.position.x === 0 && obj.position.y === 0 && obj.position.z === 0);
+  }
+
   registerCollision() {
     this.hitBox.geometry.computeBoundingBox()
     let box3 = this.hitBox.geometry.boundingBox.clone();
@@ -93,6 +101,16 @@ export default class Minion {
       this.speed = 0;
       this.attack = true;
       this.currentTarget = otherCollider.object3d.userData.object;
+    });
+
+    this.collider.addEventListener('contactStay', (otherCollider) => {
+      if(otherCollider.object3d.userData.player.id === this.playerId) { return; }
+
+      if(this.currentTarget === null) {
+        this.speed = 0;
+        this.attack = true;
+        this.currentTarget = otherCollider.object3d.userData.object;
+      }
     });
 
     this.collider.addEventListener('contactRemoved', (otherCollider) => {
@@ -116,6 +134,7 @@ export default class Minion {
   }
 
   runLoop(timestamp) {
+
     this.attackProcedure(timestamp);
     this.viewObj.position.x += (this.speed * this.direction);
 
@@ -146,7 +165,6 @@ export default class Minion {
 
     this.currentTarget.health -= this.getAttackValue();
 
-    console.log(this.id, this.health);
     if(this.currentTarget.health <= 0) {
       this.player.processReward(this.currentTarget.killReward);
 
