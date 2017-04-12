@@ -36,10 +36,10 @@ export default class GameEngine {
       personality: "defensiveAI"
     });
 
-    // this.playerAI = new AI({
-    //   player: this.myPlayer,
-    //   personality: "defensiveAI"
-    // });
+    this.playerAI = new AI({
+      player: this.myPlayer,
+      personality: "defensiveAI"
+    });
 
 
     this.state.players = [ this.myPlayer, this.computer ];

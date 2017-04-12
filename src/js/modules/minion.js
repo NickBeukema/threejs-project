@@ -8,13 +8,14 @@ export default class Minion {
     this.playerId = args.playerId;
     this.player = args.player;
     this.startingZ = args.startingZ;
+    this.scene = args.scene;
 
     this.maxHealth = 10;
     this.health = this.maxHealth;
     this.attackStrength = 3;
-    this.attackSpeed = 500;
+    this.attackSpeed = 100;
 
-    this.defaultSpeed = 0.5;
+    this.defaultSpeed = 1;
     this.speed = this.defaultSpeed;
     this.attackProperties = {
       lastTimeStamp: null,
@@ -34,13 +35,9 @@ export default class Minion {
   }
 
   initializeView(startingZ, hitBoxOpacity=.25) {
-    this.viewObj = new THREE.Group();
+    this.viewObj = new THREE.Group();    
 
-    let shapeGeometry = new THREE.BoxGeometry(2,2,2);
-    let shapeMaterial = new THREE.MeshPhongMaterial({color: 0x00ff00, specular: 0x555555, shininess: 30 });
-    let shapeMesh = new THREE.Mesh(shapeGeometry, shapeMaterial);
-
-    let hitGeometry = new THREE.BoxGeometry(3,3,3);
+    let hitGeometry = new THREE.BoxGeometry(3,8,3);
     let hitMaterial = new THREE.MeshBasicMaterial({color: 0x00ffff, transparent: true, opacity: hitBoxOpacity });
     let hitMesh = new THREE.Mesh(hitGeometry, hitMaterial);
 
@@ -51,7 +48,6 @@ export default class Minion {
     //this.viewObj.add(this.healthBar);
 
     hitMesh.add(this.healthBar);
-    hitMesh.add(shapeMesh);
     this.viewObj = hitMesh;
     this.hitBox = this.viewObj;
 
@@ -59,7 +55,7 @@ export default class Minion {
     let x = (gridWidth / 2) * -this.direction;
     this.viewObj.position.z = z;
     this.viewObj.position.x = x;
-    this.viewObj.position.y = 2;
+    this.viewObj.position.y = 4;
 
     this.hitBox.userData.object = this;
     this.hitBox.userData.player = this.player;

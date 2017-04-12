@@ -39,7 +39,14 @@ export default class Player {
       });
 
       this.minions.push(minion);
-      this.scene.add(minion.viewObj);
+      let shapeGeometry = new THREE.BoxGeometry(2,2,2);
+      let loader = new THREE.ObjectLoader();
+      loader.load('../../geometry/model.json', (obj) => {
+        console.log(minion);
+        obj.position.y = -4;
+        minion.viewObj.add(obj);
+        this.scene.add(minion.viewObj);
+      });
     } else {
       return null;
     }
