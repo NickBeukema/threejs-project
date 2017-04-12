@@ -13,9 +13,9 @@ export default class Minion {
     this.maxHealth = 10;
     this.health = this.maxHealth;
     this.attackStrength = 3;
-    this.attackSpeed = 100;
+    this.attackSpeed = 500;
 
-    this.defaultSpeed = 1;
+    this.defaultSpeed = .4;
     this.speed = this.defaultSpeed;
     this.attackProperties = {
       lastTimeStamp: null,
