@@ -94,7 +94,7 @@ export default class Player {
   setupGameState() {
     this.minions = [];
     this.score = 0;
-    this.money = 400;
+    this.money = 4000;
     this.minionCost = 20;
   }
 }

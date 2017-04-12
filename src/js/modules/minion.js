@@ -7,11 +7,13 @@ export default class Minion {
     this.id = args.id;
     this.playerId = args.playerId;
     this.player = args.player;
+    this.startingZ = args.startingZ;
 
     this.maxHealth = 10;
     this.health = this.maxHealth;
     this.attackStrength = 3;
     this.attackSpeed = 500;
+
     this.defaultSpeed = 0.5;
     this.speed = this.defaultSpeed;
     this.attackProperties = {
@@ -27,7 +29,7 @@ export default class Minion {
     this.destroy = false;
     this.attack = false;
 
-    this.initializeView(args.startingZ);
+    this.initializeView(this.startingZ);
     this.registerCollision();
   }
 

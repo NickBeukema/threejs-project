@@ -32,12 +32,14 @@ export default class GameEngine {
     });
 
     this.AI = new AI({
-      player: this.computer
+      player: this.computer,
+      personality: "defensiveAI"
     });
 
-    this.playerAI = new AI({
-      player: this.myPlayer
-    });
+    // this.playerAI = new AI({
+    //   player: this.myPlayer,
+    //   personality: "defensiveAI"
+    // });
 
 
     this.state.players = [ this.myPlayer, this.computer ];
@@ -45,11 +47,11 @@ export default class GameEngine {
 
   gameLoop(timestamp) {
     if(this.AI) {
-      this.AI.runLoop(timestamp);
+      this.AI.runLoop(timestamp, this.myPlayer.minions);
     }
 
     if(this.playerAI) {
-      this.playerAI.runLoop(timestamp);
+      this.playerAI.runLoop(timestamp, this.computer.minions);
     }
     this.state.players.forEach(player => player.runLoop(timestamp));
     this.colliderSystem.computeAndNotify(this.colliderList);
