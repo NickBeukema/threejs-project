@@ -1,3 +1,5 @@
+import { gridWidth, gridLength, gridSubDiv } from './constants';
+
 export default class Base {
 
   constructor(args) {
@@ -6,7 +8,7 @@ export default class Base {
     this.player = args.player;
     this.playerId = this.player.id;
 
-    this.baseWidth = 80;
+    this.baseWidth = gridWidth;
     this.baseHeight = 20;
     this.baseDepth = 10;
 
@@ -33,7 +35,7 @@ export default class Base {
       this.baseWidth
     );
 
-    let shapeMaterial = new THREE.MeshPhongMaterial({color: 0x00ff00, specular: 0x555555, shininess: 30 });
+    let shapeMaterial = new THREE.MeshPhongMaterial({color: 0x008800, specular: 0x555555, shininess: 30 });
     let shapeMesh = new THREE.Mesh(shapeGeometry, shapeMaterial);
 
     let hitGeometry = new THREE.BoxGeometry(
@@ -52,7 +54,7 @@ export default class Base {
     this.viewObj.add(hitMesh);
     this.viewObj.add(this.healthBar);
 
-    this.viewObj.position.x = (-35 - (this.baseDepth / 2)) * this.direction;
+    this.viewObj.position.x = ((-gridWidth/2) - (this.baseDepth / 2)) * this.direction;
     this.viewObj.position.y = this.baseHeight/2;
 
     this.hitBox.userData.object = this;
@@ -60,13 +62,14 @@ export default class Base {
   }
 
   initializeHealthBar() {
-    this._healthBarWidth = 2;
-    let fullHealthBarGeometry = new THREE.BoxGeometry(this._healthBarWidth, 0.1, 0.1);
+    this._healthBarLength = gridWidth / 10;
+    this._healthBarWidth = gridWidth / 150;
+    let fullHealthBarGeometry = new THREE.BoxGeometry(this._healthBarLength, this._healthBarWidth, this._healthBarWidth);
     let fullHealthBarMaterial = new THREE.MeshBasicMaterial({color: 0x00ff00});
     let fullHealthBarMesh = new THREE.Mesh(fullHealthBarGeometry, fullHealthBarMaterial);
     fullHealthBarMesh.name = "FullHealthBar";
 
-    let emptyHealthBarGeometry = new THREE.BoxGeometry(this._healthBarWidth, 0.09, 0.09);
+    let emptyHealthBarGeometry = new THREE.BoxGeometry(this._healthBarLength * 0.99, this._healthBarWidth * 0.9, this._healthBarWidth * 0.9);
     let emptyHealthBarMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
     let emptyHealthBarMesh = new THREE.Mesh(emptyHealthBarGeometry, emptyHealthBarMaterial);
     emptyHealthBarMesh.name = "EmptyHealthBar";
@@ -82,7 +85,7 @@ export default class Base {
 
   updateHealthBar() {
     let healthPercent = this.health/this.maxHealth;
-    let healthBarOffset = -(1-healthPercent) * this._healthBarWidth / 2;
+    let healthBarOffset = -(1-healthPercent) * this._healthBarLength / 2;
     let fullHealthBar = this.healthBar.getObjectByName('FullHealthBar');
 
     fullHealthBar.scale.x = healthPercent;

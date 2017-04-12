@@ -18,8 +18,10 @@ export default class GameView {
 
     this.mouse = { x: 0, ady: 0 };
 
-    this.camera.position.z = 200;
-    this.camera.position.y = 100;
+    let positionScale = gridWidth / 2;
+
+    this.camera.position.z = 2 * positionScale;
+    this.camera.position.y = 1.5 * positionScale;
     this.camera.lookAt(this.scene.position);
 
 
