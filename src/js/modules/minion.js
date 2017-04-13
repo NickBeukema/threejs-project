@@ -13,9 +13,9 @@ export default class Minion {
     this.maxHealth = 10;
     this.health = this.maxHealth;
     this.attackStrength = 3;
-    this.attackSpeed = 100;
+    this.attackSpeed = 400;
 
-    this.defaultSpeed = 1;
+    this.defaultSpeed = .2;
     this.speed = this.defaultSpeed;
     this.attackProperties = {
       lastTimeStamp: null,
@@ -143,6 +143,7 @@ export default class Minion {
   attackProcedure(timestamp) {
     if(this.health <= 0) { return; }
 
+
     if(this.attackProperties.lastTimeStamp != null && this.attack) {
       let delta = timestamp - this.attackProperties.lastTimeStamp;
       this.attackProperties.attackTime += delta;
@@ -160,6 +161,7 @@ export default class Minion {
   attackLoop() {
     if(this.currentTarget === null || this.currentTarget.playerId === this.playerId) { return; }
     if(this.attackProperties.attackTime < this.attackSpeed) { return; }
+    this.animateAttack();
 
     this.currentTarget.health -= this.getAttackValue();
 
@@ -173,5 +175,12 @@ export default class Minion {
 
     this.attackProperties.attackTime = 0;
     this.attackProperties.lastTimeStamp = null;
+  }
+
+  animateAttack() {
+    console.log(this.viewObj);
+    let modelMesh = this.viewObj.children[1];
+    modelMesh.children[1].rotation.z = Math.PI * .5;
+
   }
 }

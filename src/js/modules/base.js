@@ -12,7 +12,7 @@ export default class Base {
     this.baseHeight = 20;
     this.baseDepth = 10;
 
-    this.maxHealth = 50;
+    this.maxHealth = 5000;
     this.health = this.maxHealth;
 
     this.hitBoxBuffer = 2;

@@ -5,8 +5,9 @@ export default class AI {
   constructor(args) {
     this.determineAIFunction(args.personality);
     this.player = args.player;
-    this.spawnInterval = 200;
+    this.spawnInterval = 500;
     this.lastSpawn = 0;
+    this.poppulationLimit = 1;
   }
 
   canSpawn(timestamp) {
@@ -18,7 +19,7 @@ export default class AI {
 
     let spawnIndex = this.AIFunction(opponents);
 
-    if(spawnIndex >= 0) {
+    if(spawnIndex >= 0 && this.player.minions.length < this.poppulationLimit) {
       this.player.spawnMinion(spawnIndex);
       this.lastSpawn = timestamp;
     }
