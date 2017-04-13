@@ -183,8 +183,9 @@ export default class Minion {
 
   animateAttack() {
     console.log(this.viewObj);
-    let modelMesh = this.viewObj.children[1];
-    modelMesh.children[1].rotation.z = Math.PI * .5;
-
+    if(this.viewObj.children.length > 1) {
+      let modelMesh = this.viewObj.children[1];
+      modelMesh.children[1].rotation.z = Math.PI * .5;
+    }
   }
 }

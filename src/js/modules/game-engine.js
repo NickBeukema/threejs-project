@@ -41,7 +41,7 @@ export default class GameEngine {
 
     this.playerAI = new AI({
       player: this.myPlayer,
-      personality: "defensiveAI"
+      personality: "nicksAI"
     });
 
 

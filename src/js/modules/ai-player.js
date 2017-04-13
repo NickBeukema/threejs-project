@@ -13,7 +13,7 @@ export default class AI {
     this.player = args.player;
     this.spawnInterval = 500;
     this.lastSpawn = 0;
-    this.poppulationLimit = 1;
+    this.poppulationLimit = 500;
   }
 
   canSpawn(timestamp) {
