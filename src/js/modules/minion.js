@@ -15,7 +15,7 @@ export default class Minion {
     this.attackStrength = 3;
     this.attackSpeed = 400;
 
-    this.defaultSpeed = .2;
+    this.defaultSpeed = 0.3;
     this.speed = this.defaultSpeed;
     this.attackProperties = {
       lastTimeStamp: null,
@@ -59,6 +59,10 @@ export default class Minion {
 
     this.hitBox.userData.object = this;
     this.hitBox.userData.player = this.player;
+  }
+
+  getPosition() {
+    return this.viewObj.position;
   }
 
   initializeHealthBar() {

@@ -1,5 +1,6 @@
 import Minion from './minion';
 import Base from './base';
+import { gridWidth, gridSubDiv } from './constants';
 
 export default class Player {
 
@@ -10,6 +11,7 @@ export default class Player {
     this.colliderList = args.colliderList;
     this.scene = args.scene;
     this.minionId = 0;
+    this.spawnPos = -gridWidth / 2 * this.direction;
 
     this.setupGameState();
     this.spawnBase();
@@ -113,7 +115,7 @@ export default class Player {
   setupGameState() {
     this.minions = [];
     this.score = 0;
-    this.money = 400000;
+    this.money = 4000;
     this.minionCost = 20;
     this.lost = false;
   }
