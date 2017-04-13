@@ -43,7 +43,7 @@ export default class Player {
       this.minions.push(minion);
       let shapeGeometry = new THREE.BoxGeometry(2,2,2);
       let loader = new THREE.ObjectLoader();
-      loader.load('../geometry/model.json', (obj) => {
+      loader.load('./geometry/model.json', (obj) => {
         console.log(obj);
         obj.position.y = -4;
         minion.viewObj.add(obj);
