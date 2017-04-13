@@ -16,11 +16,11 @@
 			"depthSegments": 0
 		},
 		{
-			"uuid": "44E7AF6F-D41C-4019-AEF2-1E137F57904B",
+			"uuid": "D4FA3671-A278-4F1F-ACD9-1D6D3A46264F",
 			"type": "SphereBufferGeometry",
 			"radius": 1,
-			"widthSegments": 32,
-			"heightSegments": 16,
+			"widthSegments": 5,
+			"heightSegments": 5,
 			"phiStart": 0,
 			"phiLength": 6.283185,
 			"thetaStart": 0,
@@ -94,7 +94,7 @@
 		{
 			"uuid": "4DA0B380-0362-4325-80F0-C05F546E87E4",
 			"type": "MeshStandardMaterial",
-			"color": 16777215,
+			"color": 5094226,
 			"roughness": 0.5,
 			"metalness": 0.5,
 			"emissive": 5094226,
@@ -107,7 +107,7 @@
 		{
 			"uuid": "929146B7-D3D2-4ECF-96AF-0656F95B2F63",
 			"type": "MeshStandardMaterial",
-			"color": 16777215,
+			"color": 12481607,
 			"roughness": 0.5,
 			"metalness": 0.5,
 			"emissive": 12481607,
@@ -120,7 +120,7 @@
 		{
 			"uuid": "1C8B215E-374D-43C0-89A5-5867FBCBF54E",
 			"type": "MeshStandardMaterial",
-			"color": 16777215,
+			"color": 0,
 			"roughness": 0.5,
 			"metalness": 0.5,
 			"emissive": 0,
@@ -133,7 +133,7 @@
 		{
 			"uuid": "921C2017-FE2A-4805-A27D-CA7F02E4A59E",
 			"type": "MeshStandardMaterial",
-			"color": 16777215,
+			"color": 0,
 			"roughness": 0.5,
 			"metalness": 0.5,
 			"emissive": 0,
@@ -146,7 +146,7 @@
 		{
 			"uuid": "FA7E4CC8-B637-4B01-B858-32A7DCB39492",
 			"type": "MeshStandardMaterial",
-			"color": 16777215,
+			"color": 7286577,
 			"roughness": 0.5,
 			"metalness": 0.5,
 			"emissive": 7286577,
@@ -159,7 +159,7 @@
 		{
 			"uuid": "70133472-01F4-4AA3-87DB-5A92532C7561",
 			"type": "MeshStandardMaterial",
-			"color": 16777215,
+			"color": 0,
 			"roughness": 0.5,
 			"metalness": 0.5,
 			"emissive": 0,
@@ -172,7 +172,7 @@
 		{
 			"uuid": "ACB99F55-D422-4ECB-A845-C35494A846C2",
 			"type": "MeshStandardMaterial",
-			"color": 16777215,
+			"color": 12481607,
 			"roughness": 0.5,
 			"metalness": 0.5,
 			"emissive": 12481607,
@@ -185,7 +185,7 @@
 		{
 			"uuid": "659BD649-4A10-4033-85FA-2F2072999D32",
 			"type": "MeshStandardMaterial",
-			"color": 16777215,
+			"color": 0,
 			"roughness": 0.5,
 			"metalness": 0.5,
 			"emissive": 0,
@@ -198,7 +198,7 @@
 		{
 			"uuid": "C00F16F9-4B70-4903-A9C6-9ABDE9E2D08F",
 			"type": "MeshStandardMaterial",
-			"color": 16777215,
+			"color": 12481607,
 			"roughness": 0.5,
 			"metalness": 0.5,
 			"emissive": 12481607,
@@ -233,7 +233,7 @@
 						"type": "Mesh",
 						"name": "Sphere 1",
 						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,6,0,1],
-						"geometry": "44E7AF6F-D41C-4019-AEF2-1E137F57904B",
+						"geometry": "D4FA3671-A278-4F1F-ACD9-1D6D3A46264F",
 						"material": "929146B7-D3D2-4ECF-96AF-0656F95B2F63"
 					},
 					{
