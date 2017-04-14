@@ -96,8 +96,6 @@ export default class Base {
     this.hitBox.geometry.computeBoundingBox()
     let box3 = this.hitBox.geometry.boundingBox.clone();
     this.collider = new THREEx.ColliderBox3(this.hitBox, box3);
-
-    console.log(this.colliderList);
     this.colliderList.push(this.collider);
   }
 

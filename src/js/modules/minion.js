@@ -12,8 +12,8 @@ export default class Minion {
 
     this.maxHealth = 10;
     this.health = this.maxHealth;
-    this.attackStrength = 3;
-    this.attackSpeed = 400;
+    this.attackStrength = 5;
+    this.attackSpeed = 250;
 
     this.defaultSpeed = 0.3;
     this.speed = this.defaultSpeed;
@@ -22,13 +22,20 @@ export default class Minion {
       attackTime: 0
     };
 
+    this.attackAnimationProperties = {
+      direction: this.direction,
+      speed: this.attackSpeed / 2,
+    };
+
     this.killReward = {
-      money: 15,
-      score: 10
-    }
+      money: 75,
+      score: 25
+    };
 
     this.destroy = false;
     this.attack = false;
+
+    this.rotObjectMatrix = null;
 
     this.initializeView(this.startingZ);
     this.registerCollision();
@@ -123,7 +130,8 @@ export default class Minion {
   }
 
   getAttackValue() {
-    return Math.random() * this.attackStrength;
+    let critProc = Math.random();
+    return critProc >= .9 ? this.attackStrength * (Math.random() + 1) : this.attackStrength;
   }
 
   updateHealthBar() {
@@ -150,23 +158,23 @@ export default class Minion {
 
     if(this.attackProperties.lastTimeStamp != null && this.attack) {
       let delta = timestamp - this.attackProperties.lastTimeStamp;
-      this.attackProperties.attackTime += delta;
+      this.attackProperties.attackTime = Math.min(this.attackProperties.attackTime + delta, this.attackSpeed);
       this.attackProperties.lastTimeStamp = timestamp;
-      this.attackLoop();
+      this.attackLoop(delta);
     } else if(this.attack) {
       this.attackProperties.attackTime = 0;
       this.attackProperties.lastTimeStamp = timestamp;
-      this.attackLoop();
+      this.attackLoop(0);
     }
 
     this.attackProperties.lastTimeStamp = timestamp;
   }
 
-  attackLoop() {
+  attackLoop(delta) {
     if(this.currentTarget === null || this.currentTarget.playerId === this.playerId) { return; }
+    this.animateAttack(delta);
     if(this.attackProperties.attackTime < this.attackSpeed) { return; }
-    this.animateAttack();
-
+    
     this.currentTarget.health -= this.getAttackValue();
 
     if(this.currentTarget.health <= 0) {
@@ -181,11 +189,39 @@ export default class Minion {
     this.attackProperties.lastTimeStamp = null;
   }
 
-  animateAttack() {
-    console.log(this.viewObj);
+  animateAttack(delta) {
     if(this.viewObj.children.length > 1) {
-      let modelMesh = this.viewObj.children[1];
-      modelMesh.children[1].rotation.z = Math.PI * .5;
+      let rightArm = this.viewObj.children[1].children[1];
+
+      let currentAttackTime = this.attackProperties.attackTime;
+      let direction = this.attackAnimationProperties.direction;
+      let animationSpeed = this.attackAnimationProperties.speed;
+
+      let rotation = direction * ((135 * (Math.PI / 180)) * (delta / animationSpeed));
+      rotation = Math.min(rightArm.rotation.z + rotation, 135);
+      rotation = Math.max(rotation, 0);
+
+      rightArm.rotation.z = rotation;
+      if(currentAttackTime > animationSpeed) {
+        this.attackAnimationProperties.direction = -1;
+      } else {
+        this.attackAnimationProperties.direction = 1;
+      }
     }
+  }
+
+  resetAttackAnimation() {
+    if(this.viewObj.children.length > 1) {
+      let rightArm = this.viewObj.children[1].children[1];
+      rightArm.rotation.z = 0;
+    }
+  }
+
+  animateWalk() {
+
+  }
+
+  resetWalkAnimation() {
+
   }
 }

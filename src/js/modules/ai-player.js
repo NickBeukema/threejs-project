@@ -11,9 +11,9 @@ export default class AI {
   constructor(args) {
     this.determineAIFunction(args.personality);
     this.player = args.player;
-    this.spawnInterval = 500;
+    this.spawnInterval = 100;
     this.lastSpawn = 0;
-    this.poppulationLimit = 500;
+    this.poppulationLimit = 10;
   }
 
   canSpawn(timestamp) {
@@ -104,8 +104,6 @@ export default class AI {
     } else {
       arrayToUse = decision.gaps;
     }
-
-    console.log(decision);
 
     let arrIdx = Math.floor(Math.random() * arrayToUse.length);
     return arrayToUse[arrIdx];

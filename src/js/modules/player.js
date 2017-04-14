@@ -44,9 +44,13 @@ export default class Player {
       let shapeGeometry = new THREE.BoxGeometry(2,2,2);
       let loader = new THREE.ObjectLoader();
       loader.load('./geometry/model.json', (obj) => {
-        console.log(obj);
         obj.position.y = -4;
         minion.viewObj.add(obj);
+
+        if(minion.direction === -1) {
+          minion.viewObj.rotation.y = Math.PI;
+        }
+
         this.scene.add(minion.viewObj);
       });
     }
@@ -67,6 +71,7 @@ export default class Player {
 
     this.minions.forEach((minion, index) => {
       minion.runLoop(timestamp);
+      if(!minion.attack) { minion.resetAttackAnimation(); }
       if(minion.destroy) { this.destroyMinion(minion, index); }
     });
   }
@@ -117,7 +122,7 @@ export default class Player {
     this.minions = [];
     this.score = 0;
     this.money = 4000;
-    this.minionCost = 20;
+    this.minionCost = 50;
     this.lost = false;
   }
 }
