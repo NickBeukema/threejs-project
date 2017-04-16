@@ -59,6 +59,7 @@ export default class Base {
 
     this.hitBox.userData.object = this;
     this.hitBox.userData.player = this.player;
+    this.hitBox.userData.immuneToRange = true;
   }
 
   initializeHealthBar() {

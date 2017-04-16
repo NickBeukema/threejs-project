@@ -105,20 +105,28 @@ export default class Minion {
     this.colliderList.push(this.collider);
 
     this.collider.addEventListener('contactEnter', (otherCollider) => {
-      if(otherCollider.object3d.userData.player.id === this.playerId) { return; }
+      let userData = otherCollider.object3d.userData;
+
+      if(userData.player.id === this.playerId) { return; }
+      if(userData.ranged) { return; }
+
+      console.log(otherCollider);
 
       this.speed = 0;
       this.attack = true;
-      this.currentTarget = otherCollider.object3d.userData.object;
+      this.currentTarget = userData.object;
     });
 
     this.collider.addEventListener('contactStay', (otherCollider) => {
-      if(otherCollider.object3d.userData.player.id === this.playerId) { return; }
+      let userData = otherCollider.object3d.userData;
+
+      if(userData.player.id === this.playerId) { return; }
+      if(userData.ranged) { return; }
 
       if(this.currentTarget === null) {
         this.speed = 0;
         this.attack = true;
-        this.currentTarget = otherCollider.object3d.userData.object;
+        this.currentTarget = userData.object;
       }
     });
 
@@ -144,7 +152,6 @@ export default class Minion {
   }
 
   runLoop(timestamp) {
-
     this.attackProcedure(timestamp);
     this.viewObj.position.x += (this.speed * this.direction);
 
@@ -174,7 +181,7 @@ export default class Minion {
     if(this.currentTarget === null || this.currentTarget.playerId === this.playerId) { return; }
     this.animateAttack(delta);
     if(this.attackProperties.attackTime < this.attackSpeed) { return; }
-    
+
     this.currentTarget.health -= this.getAttackValue();
 
     if(this.currentTarget.health <= 0) {

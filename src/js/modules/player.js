@@ -20,7 +20,7 @@ export default class Player {
   }
 
   spawnArchers() {
-    this.archers.push(new Archer({ scene: this.scene, colliderList: this.colliderList, startingZ: 2, startingY: 20, startingX: this.spawnPos, direction: this.direction }));
+    this.archers.push(new Archer({ scene: this.scene, colliderList: this.colliderList, startingZ: 2, startingY: 20, startingX: this.spawnPos, direction: this.direction, player: this }));
   }
 
   spawnBase() {
@@ -79,6 +79,10 @@ export default class Player {
       minion.runLoop(timestamp);
       if(!minion.attack) { minion.resetAttackAnimation(); }
       if(minion.destroy) { this.destroyMinion(minion, index); }
+    });
+
+    this.archers.forEach((archer, index) => {
+      archer.runLoop(timestamp);
     });
   }
 
