@@ -1,4 +1,5 @@
 import Minion from './minion';
+import Archer from './archer';
 import Base from './base';
 import { gridWidth, gridSubDiv } from './constants';
 
@@ -15,6 +16,11 @@ export default class Player {
 
     this.setupGameState();
     this.spawnBase();
+    this.spawnArchers();
+  }
+
+  spawnArchers() {
+    this.archers.push(new Archer({ scene: this.scene, colliderList: this.colliderList, startingZ: 2, startingY: 20, startingX: this.spawnPos, direction: this.direction, player: this }));
   }
 
   spawnBase() {
@@ -74,6 +80,10 @@ export default class Player {
       if(!minion.attack) { minion.resetAttackAnimation(); }
       if(minion.destroy) { this.destroyMinion(minion, index); }
     });
+
+    this.archers.forEach((archer, index) => {
+      archer.runLoop(timestamp);
+    });
   }
 
   destroyMinion(minion, index) {
@@ -120,6 +130,7 @@ export default class Player {
 
   setupGameState() {
     this.minions = [];
+    this.archers = [];
     this.score = 0;
     this.money = 4000;
     this.minionCost = 50;

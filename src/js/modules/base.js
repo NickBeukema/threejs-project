@@ -10,7 +10,7 @@ export default class Base {
 
     this.baseWidth = gridWidth;
     this.baseHeight = 20;
-    this.baseDepth = 10;
+    this.baseDepth = 20;
 
     this.maxHealth = 5000;
     this.health = this.maxHealth;
@@ -26,7 +26,7 @@ export default class Base {
     this.registerCollision();
   }
 
-  initializeView(direction, hitBoxOpacity=.25) {
+  initializeView(direction, hitBoxOpacity=0) {
     this.viewObj = new THREE.Group();
 
     let shapeGeometry = new THREE.BoxGeometry(
@@ -35,7 +35,7 @@ export default class Base {
       this.baseWidth
     );
 
-    let shapeMaterial = new THREE.MeshPhongMaterial({color: 0x008800, specular: 0x555555, shininess: 30 });
+    let shapeMaterial = new THREE.MeshPhongMaterial({color: 0x555555, specular: 0x222222, shininess: 5 });
     let shapeMesh = new THREE.Mesh(shapeGeometry, shapeMaterial);
 
     let hitGeometry = new THREE.BoxGeometry(
@@ -59,6 +59,7 @@ export default class Base {
 
     this.hitBox.userData.object = this;
     this.hitBox.userData.player = this.player;
+    this.hitBox.userData.immuneToRange = true;
   }
 
   initializeHealthBar() {
