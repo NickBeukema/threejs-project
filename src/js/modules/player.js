@@ -48,7 +48,7 @@ export default class Player {
         minion.viewObj.add(obj);
 
         if(minion.direction === -1) {
-          minion.viewObj.rotation.y = Math.PI;
+          minion.viewObj.children[1].rotation.y = Math.PI;
         }
 
         this.scene.add(minion.viewObj);

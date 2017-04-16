@@ -13,7 +13,7 @@ export default class Minion {
     this.maxHealth = 10;
     this.health = this.maxHealth;
     this.attackStrength = 5;
-    this.attackSpeed = 250;
+    this.attackSpeed = 400;
 
     this.defaultSpeed = 0.3;
     this.speed = this.defaultSpeed;
@@ -25,6 +25,13 @@ export default class Minion {
     this.attackAnimationProperties = {
       direction: this.direction,
       speed: this.attackSpeed / 2,
+    };
+
+    this.walkingAnimationProperties = {
+      direction: this.direction,
+      speed: (this.defaultSpeed * 1000),
+      lastTimeStamp: null,
+      time: 0
     };
 
     this.killReward = {
@@ -110,6 +117,7 @@ export default class Minion {
       this.speed = 0;
       this.attack = true;
       this.currentTarget = otherCollider.object3d.userData.object;
+      this.resetWalkAnimation();
     });
 
     this.collider.addEventListener('contactStay', (otherCollider) => {
@@ -119,6 +127,7 @@ export default class Minion {
         this.speed = 0;
         this.attack = true;
         this.currentTarget = otherCollider.object3d.userData.object;
+        this.resetWalkAnimation();
       }
     });
 
@@ -147,6 +156,7 @@ export default class Minion {
 
     this.attackProcedure(timestamp);
     this.viewObj.position.x += (this.speed * this.direction);
+    this.walkProcedure(timestamp);
 
     this.collider.update();
     this.updateHealthBar();
@@ -158,7 +168,7 @@ export default class Minion {
 
     if(this.attackProperties.lastTimeStamp != null && this.attack) {
       let delta = timestamp - this.attackProperties.lastTimeStamp;
-      this.attackProperties.attackTime = Math.min(this.attackProperties.attackTime + delta, this.attackSpeed);
+      this.attackProperties.attackTime = this.attackProperties.attackTime + delta;
       this.attackProperties.lastTimeStamp = timestamp;
       this.attackLoop(delta);
     } else if(this.attack) {
@@ -173,7 +183,7 @@ export default class Minion {
   attackLoop(delta) {
     if(this.currentTarget === null || this.currentTarget.playerId === this.playerId) { return; }
     this.animateAttack(delta);
-    if(this.attackProperties.attackTime < this.attackSpeed) { return; }
+    if(this.attackProperties.attackTime <= this.attackSpeed) { return; }
     
     this.currentTarget.health -= this.getAttackValue();
 
@@ -192,13 +202,13 @@ export default class Minion {
   animateAttack(delta) {
     if(this.viewObj.children.length > 1) {
       let rightArm = this.viewObj.children[1].children[1];
-
       let currentAttackTime = this.attackProperties.attackTime;
       let direction = this.attackAnimationProperties.direction;
       let animationSpeed = this.attackAnimationProperties.speed;
+      let maxRotation = 135;
 
-      let rotation = direction * ((135 * (Math.PI / 180)) * (delta / animationSpeed));
-      rotation = Math.min(rightArm.rotation.z + rotation, 135);
+      let rotation = direction * ((maxRotation * (Math.PI / 180)) * (delta / animationSpeed));
+      rotation = Math.min(rightArm.rotation.z + rotation, maxRotation);
       rotation = Math.max(rotation, 0);
 
       rightArm.rotation.z = rotation;
@@ -217,11 +227,82 @@ export default class Minion {
     }
   }
 
-  animateWalk() {
+  walkProcedure(timestamp) {
+    if(!this.attack && this.walkingAnimationProperties.lastTimeStamp !== null) {
+      let delta = timestamp - this.walkingAnimationProperties.lastTimeStamp;
+      this.walkingAnimationProperties.time = this.walkingAnimationProperties.time + delta;
+      this.walkLoop(delta);
+    } else {
+      this.walkLoop(0);
+    }
 
+    this.walkingAnimationProperties.lastTimeStamp = timestamp;
+  };
+
+  walkLoop(delta) {
+    this.animateWalk(delta);
+    if(this.walkingAnimationProperties.time <= this.walkingAnimationProperties.speed) { return; }
+    this.walkingAnimationProperties.time = 0;
+  }
+
+  animateWalk(delta) {
+    if(this.viewObj.children.length > 1 && !this.attack) {
+      let legs = this.viewObj.children[1].children[3];
+      let leftLeg = legs.children[0];
+      let rightLeg = legs.children[1];
+      let animationTime = this.walkingAnimationProperties.time;
+      let animationSpeed = this.walkingAnimationProperties.speed;
+      let direction = this.walkingAnimationProperties.direction;
+      let maxRotation = 150 * this.direction;
+
+      let rotation = ((maxRotation * (Math.PI / 180)) * (delta / animationSpeed));
+
+      console.log(leftLeg.rotation.z, rightLeg.rotation.z);
+      if(direction === 1) {
+        this.animateLegForward(leftLeg, rotation, maxRotation, delta);
+        this.animateLegBack(rightLeg, rotation, maxRotation, delta);
+      } else {
+        this.animateLegForward(rightLeg, rotation, maxRotation, delta);
+        this.animateLegBack(leftLeg, rotation, maxRotation, delta);
+      }
+
+      let animationChange = animationSpeed / 4;
+      if(animationTime > animationChange && animationTime < (3 * animationChange)) {
+        this.walkingAnimationProperties.direction = -1;
+      }
+
+      if(animationTime > (3 * animationChange) && animationTime < animationSpeed) {
+        this.walkingAnimationProperties.direction = 1;
+      }
+    }
+  }
+
+  animateLegBack(leg, rotation, maxRotation, delta) {
+    let max = (-maxRotation * (Math.PI / 180)) * this.direction;
+    if(leg.rotation.z + -rotation < max) {
+      console.log('Back', leg.rotation.z + -rotation, delta);
+      leg.rotation.z = max;
+    } else {
+      leg.rotation.z += -rotation;
+    }
+  } 
+
+  animateLegForward(leg, rotation, maxRotation, delta) {
+    let max = (maxRotation * (Math.PI / 180)) * this.direction;
+    if(leg.rotation.z + rotation > max) {
+      console.log('Fore', leg.rotation.z + rotation, delta);
+      leg.rotation.z = max;
+    } else {
+      leg.rotation.z += rotation;
+    }
   }
 
   resetWalkAnimation() {
+    let legs = this.viewObj.children[1].children[3];
+    let leftLeg = legs.children[0];
+    let rightLeg = legs.children[1];
 
+    leftLeg.rotation.z = 0;
+    rightLeg.rotation.z = 0;
   }
 }

@@ -27,26 +27,6 @@
 			"thetaLength": 3.141593
 		},
 		{
-			"uuid": "0A4FB875-9BA4-483D-B249-0829557D19EE",
-			"type": "BoxBufferGeometry",
-			"width": 1,
-			"height": 2,
-			"depth": 0.95,
-			"widthSegments": 0,
-			"heightSegments": 0,
-			"depthSegments": 0
-		},
-		{
-			"uuid": "BBF02BDC-7C7D-499F-B1BC-17E95BD6D10A",
-			"type": "BoxBufferGeometry",
-			"width": 1,
-			"height": 2,
-			"depth": 0.95,
-			"widthSegments": 0,
-			"heightSegments": 0,
-			"depthSegments": 0
-		},
-		{
 			"uuid": "6EA82F4A-42DC-443D-91BD-AA6214AB5B58",
 			"type": "BoxBufferGeometry",
 			"width": 1,
@@ -89,6 +69,26 @@
 			"widthSegments": 0,
 			"heightSegments": 0,
 			"depthSegments": 0
+		},
+		{
+			"uuid": "BBF02BDC-7C7D-499F-B1BC-17E95BD6D10A",
+			"type": "BoxBufferGeometry",
+			"width": 1,
+			"height": 2,
+			"depth": 0.95,
+			"widthSegments": 0,
+			"heightSegments": 0,
+			"depthSegments": 0
+		},
+		{
+			"uuid": "0A4FB875-9BA4-483D-B249-0829557D19EE",
+			"type": "BoxBufferGeometry",
+			"width": 1,
+			"height": 2,
+			"depth": 0.95,
+			"widthSegments": 0,
+			"heightSegments": 0,
+			"depthSegments": 0
 		}],
 	"materials": [
 		{
@@ -111,32 +111,6 @@
 			"roughness": 0.5,
 			"metalness": 0.5,
 			"emissive": 12481607,
-			"depthFunc": 3,
-			"depthTest": true,
-			"depthWrite": true,
-			"skinning": false,
-			"morphTargets": false
-		},
-		{
-			"uuid": "1C8B215E-374D-43C0-89A5-5867FBCBF54E",
-			"type": "MeshStandardMaterial",
-			"color": 0,
-			"roughness": 0.5,
-			"metalness": 0.5,
-			"emissive": 0,
-			"depthFunc": 3,
-			"depthTest": true,
-			"depthWrite": true,
-			"skinning": false,
-			"morphTargets": false
-		},
-		{
-			"uuid": "921C2017-FE2A-4805-A27D-CA7F02E4A59E",
-			"type": "MeshStandardMaterial",
-			"color": 0,
-			"roughness": 0.5,
-			"metalness": 0.5,
-			"emissive": 0,
 			"depthFunc": 3,
 			"depthTest": true,
 			"depthWrite": true,
@@ -207,17 +181,43 @@
 			"depthWrite": true,
 			"skinning": false,
 			"morphTargets": false
+		},
+		{
+			"uuid": "921C2017-FE2A-4805-A27D-CA7F02E4A59E",
+			"type": "MeshStandardMaterial",
+			"color": 0,
+			"roughness": 0.5,
+			"metalness": 0.5,
+			"emissive": 0,
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"skinning": false,
+			"morphTargets": false
+		},
+		{
+			"uuid": "1C8B215E-374D-43C0-89A5-5867FBCBF54E",
+			"type": "MeshStandardMaterial",
+			"color": 0,
+			"roughness": 0.5,
+			"metalness": 0.5,
+			"emissive": 0,
+			"depthFunc": 3,
+			"depthTest": true,
+			"depthWrite": true,
+			"skinning": false,
+			"morphTargets": false
 		}],
 	"object": {
 		"uuid": "E0C6AE98-86FE-4F7C-93A4-D3EEC0F74841",
 		"type": "Group",
-		"name": "Group 0",
+		"name": "Person",
 		"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
 		"children": [
 			{
 				"uuid": "611408E8-61C0-4734-B439-30200C9ED500",
 				"type": "Group",
-				"name": "Group 1",
+				"name": "HeadBody",
 				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
 				"children": [
 					{
@@ -237,22 +237,6 @@
 						"material": "929146B7-D3D2-4ECF-96AF-0656F95B2F63"
 					},
 					{
-						"uuid": "75827D3A-E17A-4C81-909C-B0BD01EE0702",
-						"type": "Mesh",
-						"name": "Box 5",
-						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,1,-0.525,1],
-						"geometry": "0A4FB875-9BA4-483D-B249-0829557D19EE",
-						"material": "1C8B215E-374D-43C0-89A5-5867FBCBF54E"
-					},
-					{
-						"uuid": "62B632BA-8E5A-4938-8C15-B1A200E64903",
-						"type": "Mesh",
-						"name": "Box 6",
-						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,1,0.525,1],
-						"geometry": "BBF02BDC-7C7D-499F-B1BC-17E95BD6D10A",
-						"material": "921C2017-FE2A-4805-A27D-CA7F02E4A59E"
-					},
-					{
 						"uuid": "5F735DF7-D7CF-4A0A-96AD-1EB59EB6F534",
 						"type": "Mesh",
 						"name": "Box 4",
@@ -264,7 +248,7 @@
 			{
 				"uuid": "253CB317-9857-4C5E-BAE5-260B47063486",
 				"type": "Group",
-				"name": "Group 2",
+				"name": "RightArm",
 				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,4.5,1.5,1],
 				"children": [
 					{
@@ -287,7 +271,7 @@
 			{
 				"uuid": "F12114AE-9779-4C5C-865A-52533DA31191",
 				"type": "Group",
-				"name": "Group 3",
+				"name": "LeftArm",
 				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,4.5,-1.5,1],
 				"children": [
 					{
@@ -305,6 +289,43 @@
 						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-1.625,0,1],
 						"geometry": "B93E9570-AD6E-4B36-A695-7FBBC1B02DCD",
 						"material": "C00F16F9-4B70-4903-A9C6-9ABDE9E2D08F"
+					}]
+			},
+			{
+				"uuid": "8D612529-2489-4BA0-AAF0-CEC6680294B8",
+				"type": "Group",
+				"name": "Legs",
+				"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1],
+				"children": [
+					{
+						"uuid": "D0300064-832A-4BD2-B25E-AD88AE592503",
+						"type": "Group",
+						"name": "Group 2",
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,2,0.52,1],
+						"children": [
+							{
+								"uuid": "62B632BA-8E5A-4938-8C15-B1A200E64903",
+								"type": "Mesh",
+								"name": "LeftLeg",
+								"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-1,0,1],
+								"geometry": "BBF02BDC-7C7D-499F-B1BC-17E95BD6D10A",
+								"material": "921C2017-FE2A-4805-A27D-CA7F02E4A59E"
+							}]
+					},
+					{
+						"uuid": "202F6591-147C-46B6-9211-A8BFB517D9B1",
+						"type": "Group",
+						"name": "Group 3",
+						"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,2,-0.52,1],
+						"children": [
+							{
+								"uuid": "75827D3A-E17A-4C81-909C-B0BD01EE0702",
+								"type": "Mesh",
+								"name": "RightLeg",
+								"matrix": [1,0,0,0,0,1,0,0,0,0,1,0,0,-1,0,1],
+								"geometry": "0A4FB875-9BA4-483D-B249-0829557D19EE",
+								"material": "1C8B215E-374D-43C0-89A5-5867FBCBF54E"
+							}]
 					}]
 			}]
 	}

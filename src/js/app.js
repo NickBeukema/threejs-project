@@ -39,7 +39,10 @@ function init() {
   });
 
   window.addEventListener('keypress', () => {
-    gameEngine.computer.spawnMinion(3);
+    let index = gameView.getCurrentPanelIndex();
+    if(index >= 0) {
+      gameEngine.computer.spawnMinion(index);
+    }
   });
 
   render();
