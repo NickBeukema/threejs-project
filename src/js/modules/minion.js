@@ -15,7 +15,7 @@ export default class Minion {
     this.attackStrength = 5;
     this.attackSpeed = 400;
 
-    this.defaultSpeed = 0.3;
+    this.defaultSpeed = .03;
     this.speed = this.defaultSpeed;
     this.attackProperties = {
       lastTimeStamp: null,
@@ -23,13 +23,13 @@ export default class Minion {
     };
 
     this.attackAnimationProperties = {
-      direction: this.direction,
+      direction: 1,
       speed: this.attackSpeed / 2,
     };
 
     this.walkingAnimationProperties = {
       direction: this.direction,
-      speed: (this.defaultSpeed * 1000),
+      speed: 50 / this.defaultSpeed, // This should not change only change the speed of the minion and the animation will update accordingly
       lastTimeStamp: null,
       time: 0
     };
@@ -56,10 +56,6 @@ export default class Minion {
     let hitMesh = new THREE.Mesh(hitGeometry, hitMaterial);
 
     this.healthBar = this.initializeHealthBar();
-
-    //this.viewObj.add(shapeMesh);
-    //this.viewObj.add(hitMesh);
-    //this.viewObj.add(this.healthBar);
 
     hitMesh.add(this.healthBar);
     this.viewObj = hitMesh;
@@ -117,7 +113,7 @@ export default class Minion {
       if(userData.player.id === this.playerId) { return; }
       if(userData.ranged) { return; }
 
-      console.log(otherCollider);
+      //console.log(otherCollider);
 
       this.speed = 0;
       this.attack = true;
@@ -260,12 +256,11 @@ export default class Minion {
       let animationTime = this.walkingAnimationProperties.time;
       let animationSpeed = this.walkingAnimationProperties.speed;
       let direction = this.walkingAnimationProperties.direction;
-      let maxRotation = 150 * this.direction;
+      let maxRotation = 45; 
 
-      let rotation = ((maxRotation * (Math.PI / 180)) * (delta / animationSpeed));
+      let rotation = (maxRotation * (delta / animationSpeed));
 
-      console.log(leftLeg.rotation.z, rightLeg.rotation.z);
-      if(direction === 1) {
+      if(direction) {
         this.animateLegForward(leftLeg, rotation, maxRotation, delta);
         this.animateLegBack(rightLeg, rotation, maxRotation, delta);
       } else {
@@ -273,34 +268,28 @@ export default class Minion {
         this.animateLegBack(leftLeg, rotation, maxRotation, delta);
       }
 
-      let animationChange = animationSpeed / 4;
-      if(animationTime > animationChange && animationTime < (3 * animationChange)) {
-        this.walkingAnimationProperties.direction = -1;
-      }
-
-      if(animationTime > (3 * animationChange) && animationTime < animationSpeed) {
-        this.walkingAnimationProperties.direction = 1;
+      if(this.toDegrees(leftLeg.rotation.z) >= maxRotation || this.toDegrees(leftLeg.rotation.z) <= -maxRotation) {
+        this.walkingAnimationProperties.direction = !this.walkingAnimationProperties.direction;
       }
     }
   }
 
   animateLegBack(leg, rotation, maxRotation, delta) {
-    let max = (-maxRotation * (Math.PI / 180)) * this.direction;
-    if(leg.rotation.z + -rotation < max) {
-      console.log('Back', leg.rotation.z + -rotation, delta);
+    let max = this.toRadians(-maxRotation);
+
+    if(leg.rotation.z + this.toRadians(-rotation) < max) {
       leg.rotation.z = max;
     } else {
-      leg.rotation.z += -rotation;
+      leg.rotation.z += this.toRadians(-rotation);
     }
   } 
 
   animateLegForward(leg, rotation, maxRotation, delta) {
-    let max = (maxRotation * (Math.PI / 180)) * this.direction;
-    if(leg.rotation.z + rotation > max) {
-      console.log('Fore', leg.rotation.z + rotation, delta);
+    let max = this.toRadians(maxRotation);
+    if(leg.rotation.z + this.toRadians( rotation) > max) {
       leg.rotation.z = max;
     } else {
-      leg.rotation.z += rotation;
+      leg.rotation.z += this.toRadians(rotation);
     }
   }
 
@@ -311,5 +300,13 @@ export default class Minion {
 
     leftLeg.rotation.z = 0;
     rightLeg.rotation.z = 0;
+  }
+
+  toDegrees(angleRadians) {
+    return (angleRadians * 180) / Math.PI;
+  }
+
+  toRadians(angleDegrees) {
+    return (angleDegrees / 180) * Math.PI;
   }
 }

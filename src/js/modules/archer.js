@@ -62,13 +62,13 @@ export default class Archer {
       if(userData.ranged || userData.immuneToRange) { return; }
 
       this.targetList.push(userData.object);
-      console.log("Enter", this.targetList, this.playerId, otherCollider);
+      //console.log("Enter", this.targetList, this.playerId, otherCollider);
     });
 
     this.collider.addEventListener('contactRemoved', (otherCollider) => {
-      console.log(otherCollider, this.targetList);
+      //console.log(otherCollider, this.targetList);
       this.targetList = this.targetList.filter(t => t.collider.id !== otherCollider);
-      console.log("Exit", this.targetList, this.playerId);
+      //console.log("Exit", this.targetList, this.playerId);
     });
   }
 
