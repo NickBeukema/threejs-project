@@ -42,7 +42,7 @@ export default class Minion {
   }
 
   initializeView(startingZ, hitBoxOpacity=.25) {
-    this.viewObj = new THREE.Group();    
+    this.viewObj = new THREE.Group();
 
     let hitGeometry = new THREE.BoxGeometry(3,8,3);
     let hitMaterial = new THREE.MeshBasicMaterial({color: 0x00ffff, transparent: true, opacity: hitBoxOpacity });
