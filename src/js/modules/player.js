@@ -10,6 +10,7 @@ export default class Player {
     this.id = args.id;
     this.direction = args.direction;
     this.colliderList = args.colliderList;
+    this.colliderSystem = args.colliderSystem;
     this.scene = args.scene;
     this.minionId = 0;
     this.spawnPos = -gridWidth / 2 * this.direction;
@@ -47,7 +48,6 @@ export default class Player {
       });
 
       this.minions.push(minion);
-      let shapeGeometry = new THREE.BoxGeometry(2,2,2);
       let loader = new THREE.ObjectLoader();
       loader.load('./geometry/model.json', (obj) => {
         obj.position.y = -4;
@@ -75,22 +75,28 @@ export default class Player {
       if(this.base.destroy) { this.destroyBase(); } 
     }
 
+    this.archers.forEach((archer) => {
+      archer.runLoop(timestamp);
+    });
+
     this.minions.forEach((minion, index) => {
       minion.runLoop(timestamp);
       if(!minion.attack) { minion.resetAttackAnimation(); }
       if(minion.destroy) { this.destroyMinion(minion, index); }
     });
 
-    this.archers.forEach((archer, index) => {
-      archer.runLoop(timestamp);
-    });
+    this.colliderSystem.computeAndNotify(this.colliderList);
   }
 
   destroyMinion(minion, index) {
+    console.log(this.scene);
     this.scene.remove(minion.viewObj);
 
     this.colliderList.splice(this.findColliderIndex(minion.collider.id), 1);
-
+    minion.collider.removeEventListener('contactEnter');
+    minion.collider.removeEventListener('contactStay');
+    minion.collider.removeEventListener('contactExit');
+    minion.collider.removeEventListener('contactRemoved');
     this.minions.splice(index, 1);
   }
 

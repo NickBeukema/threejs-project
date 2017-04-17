@@ -11,9 +11,9 @@ export default class AI {
   constructor(args) {
     this.determineAIFunction(args.personality);
     this.player = args.player;
-    this.spawnInterval = 100;
+    this.spawnInterval = 225;
     this.lastSpawn = 0;
-    this.poppulationLimit = 0;
+    this.poppulationLimit = 15;
   }
 
   canSpawn(timestamp) {

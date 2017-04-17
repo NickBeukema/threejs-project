@@ -22,6 +22,7 @@ export default class GameEngine {
       type: 'human',
       direction: xPositive,
       colliderList: this.colliderList,
+      colliderSystem: this.colliderSystem,
       scene:this.scene,
       id: this.playerId++
     });
@@ -30,18 +31,19 @@ export default class GameEngine {
       type: 'computer',
       direction: xNegative,
       colliderList: this.colliderList,
+      colliderSystem: this.colliderSystem,
       scene: this.scene,
       id: this.playerId++
     });
 
     this.AI = new AI({
       player: this.computer,
-      personality: "nicksAI"
+      personality: "randomAI"
     });
 
     this.playerAI = new AI({
       player: this.myPlayer,
-      personality: "nicksAI"
+      personality: "randomAI"
     });
 
 
@@ -66,6 +68,7 @@ export default class GameEngine {
 
   gameLoop(timestamp) {
     if(this.gameOver) {
+
     }
     if(this.AI) {
       this.AI.runLoop(timestamp, this.myPlayer.minions);

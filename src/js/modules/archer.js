@@ -18,9 +18,9 @@ export default class Archer {
       lastAttack: 0
     };
 
-    this.attackSpeed = 700;
-    this.arrowSpeed = 1000;
-    this.attackStrength = 1;
+    this.attackSpeed = 500;
+    this.arrowSpeed = 500;
+    this.attackStrength = 20;
     this.arrowId = 0;
     this.initializeView();
     this.registerCollision();
@@ -62,14 +62,45 @@ export default class Archer {
       if(userData.ranged || userData.immuneToRange) { return; }
 
       this.targetList.push(userData.object);
-      //console.log("Enter", this.targetList, this.playerId, otherCollider);
     });
 
-    this.collider.addEventListener('contactRemoved', (otherCollider) => {
-      //console.log(otherCollider, this.targetList);
-      this.targetList = this.targetList.filter(t => t.collider.id !== otherCollider);
-      //console.log("Exit", this.targetList, this.playerId);
+    this.collider.addEventListener('contactStay', (otherCollider) => {
+      let userData = otherCollider.object3d.userData;
+
+      if(userData.player.id === this.playerId) { return; }
+      if(userData.ranged || userData.immuneToRange) { return; }
+
+      if(this.findColliderIndex(otherCollider.id) === -1) {
+        this.targetList.push(userData.object);
+      }
     });
+
+
+    this.collider.addEventListener('contactRemoved', (otherCollider) => {
+      this.targetList.splice(this.findColliderIndex(otherCollider), 1);
+      this.determineTarget();
+    });
+
+    this.collider.addEventListener('contactExit', (otherCollider) => {
+      this.removeTarget(otherCollider);
+      this.determineTarget();
+    });
+  }
+
+  findColliderIndex(id) {
+    let index = -1;
+
+    for (let i = 0; i < this.targetList.length; i++) {
+      if(this.targetList[i].collider.id === id) {
+        index = i;
+      }
+    }
+
+    return index;
+  }
+
+  removeTarget(id) {
+    this.targetList.splice(this.findColliderIndex(id), 1);
   }
 
   canAttack(timestamp) {
@@ -84,24 +115,30 @@ export default class Archer {
   }
 
   determineTarget() {
-    return this.targetList[0];
+    if(this.targetList.length > 0) {
+      return this.targetList[0];
+    } else {
+      return null;
+    }
   }
 
   attackProcedure(timestamp) {
     if(!this.canAttack(timestamp)) { return; }
 
     let target = this.determineTarget();
-    this.spawnArrow(target, timestamp, (target) => {
-      target.health -= this.getAttackValue();
-      if(target.health <= 0) {
-        this.player.processReward(target.killReward);
+    if(target !== null && target.viewObj) {
+      this.spawnArrow(target, timestamp, (target) => {
+        target.health -= this.getAttackValue();
+        if(target.health <= 0) {
+          this.player.processReward(target.killReward);
 
-        target.attack = false;
-        target.destroy = true;
-      }
-    });
-
-
+          target.attack = false;
+          target.destroy = true;
+          this.removeTarget(target.collider.id);
+        }
+      });
+    }
+    
     this.attackProperties.lastAttack = timestamp;
   }
 
@@ -109,6 +146,7 @@ export default class Archer {
     let arrowG = new THREE.BoxGeometry(1, 1, 1);
     let arrowMat = new THREE.MeshBasicMaterial({ color: 0x00FF00 });
     let arrow = new THREE.Mesh(arrowG, arrowMat);
+    arrow.name = "Arrow";
     this.scene.add(arrow);
 
     arrow.position.set(this.startingX, this.startingY, this.startingZ);
@@ -189,9 +227,9 @@ export default class Archer {
     });
   }
 
-  runLoop(timestamp) {
-    this.collider.update();
+  runLoop(timestamp) {     
     this.attackProcedure(timestamp);
     this.animateArrows(timestamp);
+    this.collider.update();
   }
 }

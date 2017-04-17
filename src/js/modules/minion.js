@@ -15,7 +15,7 @@ export default class Minion {
     this.attackStrength = 5;
     this.attackSpeed = 400;
 
-    this.defaultSpeed = .03;
+    this.defaultSpeed = .3;
     this.speed = this.defaultSpeed;
     this.attackProperties = {
       lastTimeStamp: null,
@@ -69,6 +69,8 @@ export default class Minion {
 
     this.hitBox.userData.object = this;
     this.hitBox.userData.player = this.player;
+    hitGeometry.dispose();
+    hitMaterial.dispose();
   }
 
   getPosition() {
@@ -113,8 +115,6 @@ export default class Minion {
       if(userData.player.id === this.playerId) { return; }
       if(userData.ranged) { return; }
 
-      //console.log(otherCollider);
-
       this.speed = 0;
       this.attack = true;
       this.currentTarget = userData.object;
@@ -136,6 +136,12 @@ export default class Minion {
     });
 
     this.collider.addEventListener('contactRemoved', (otherCollider) => {
+      this.speed = this.defaultSpeed;
+      this.attack = false;
+      this.currentTarget = null;
+    });
+
+    this.collider.addEventListener('contactExit', (otherCollider) => {
       this.speed = this.defaultSpeed;
       this.attack = false;
       this.currentTarget = null;
@@ -294,12 +300,14 @@ export default class Minion {
   }
 
   resetWalkAnimation() {
-    let legs = this.viewObj.children[1].children[3];
-    let leftLeg = legs.children[0];
-    let rightLeg = legs.children[1];
+    if(this.viewObj.children.length > 1) {
+      let legs = this.viewObj.children[1].children[3];
+      let leftLeg = legs.children[0];
+      let rightLeg = legs.children[1];
 
-    leftLeg.rotation.z = 0;
-    rightLeg.rotation.z = 0;
+      leftLeg.rotation.z = 0;
+      rightLeg.rotation.z = 0;
+    }
   }
 
   toDegrees(angleRadians) {
