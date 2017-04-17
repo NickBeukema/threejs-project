@@ -89,7 +89,6 @@ export default class Player {
   }
 
   destroyMinion(minion, index) {
-    console.log(this.scene);
     this.scene.remove(minion.viewObj);
 
     this.colliderList.splice(this.findColliderIndex(minion.collider.id), 1);
