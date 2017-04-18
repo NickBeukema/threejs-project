@@ -5,6 +5,7 @@ import { xPositive, xNegative, gridSubDiv } from './constants';
 
 export default class GameEngine {
   constructor(args) {
+    this.gameOver = true;
     this.state = {};
     this.scene = args.scene;
     this.camera = args.camera;
@@ -50,9 +51,11 @@ export default class GameEngine {
     this.state.players = [ this.myPlayer, this.computer ];
   }
 
-  initializeGameOver() {
+  initializeGameOver({ winner, score }) {
+    this.state.players.forEach(p => p.setGameOver());
     activateMenu({
-      winner: this.winner
+      winner: winner,
+      score: score
     })
   }
 
@@ -81,8 +84,9 @@ export default class GameEngine {
       player.runLoop(timestamp);
       if(player.lost && !this.gameOver) {
         this.gameOver = true;
-        this.winner = player.id !== this.myPlayer.id;
-        this.initializeGameOver();
+        let winner = this.state.players.find(p => p.id !== player.id);
+        let score = winner.score;
+        this.initializeGameOver({ winner, score });
       }
     });
     this.colliderSystem.computeAndNotify(this.colliderList);

@@ -1,6 +1,11 @@
 import { gridWidth, gridLength, gridSubDiv } from './constants';
 import { bindButtons } from './menu-screen';
 
+// UI Elements
+let scoreText, moneyText, fpsText, hud;
+
+
+// Texture
 const planeTexture = new THREE.TextureLoader().load("textures/stone.jpg");
 planeTexture.repeat.set(10,10);
 planeTexture.wrapS = THREE.RepeatWrapping;
@@ -26,12 +31,15 @@ export default class GameView {
     this.camera.position.y = 1.5 * positionScale;
     this.camera.lookAt(this.scene.position);
 
+    this.hud = document.getElementById('hud');
+    this.lastTimeStamp = 0;
+    this.started = false;
 
     this.raycaster = new THREE.Raycaster();
     this.currentHoveredPanel = null;
 
     this.setupMouseEvent();
-    bindButtons(this.gameEngine);
+    bindButtons(this, this.gameEngine);
   }
 
   setupLight() {
@@ -87,7 +95,7 @@ export default class GameView {
     if(intersects.length > 0) {
       let obj = intersects[0].object;
 
-      obj.material.color.setHex(0xff0000);      
+      obj.material.color.setHex(0xff0000);
       obj.material.opacity = .5;
       this.currentHoveredPanel = obj;
     } else if(this.currentHoveredPanel){
@@ -117,8 +125,50 @@ export default class GameView {
     });
   }
 
+  startFirstGame() {
+    this.gameEngine.restart();
+
+    this.hud.classList.remove('hud--hidden');
+    scoreText = document.getElementById('score');
+    moneyText = document.getElementById('money');
+    fpsText = document.getElementById('fps');
+
+    this.started = true;
+
+    window.addEventListener('click', () => {
+      let index = this.getCurrentPanelIndex();
+      if(index >= 0) {
+        this.gameEngine.myPlayer.spawnMinion(index);
+      }
+    });
+
+    window.addEventListener('keypress', () => {
+      let index = this.getCurrentPanelIndex();
+      if(index >= 0) {
+        this.gameEngine.computer.spawnMinion(index);
+      }
+    });
+  }
+
+  calculateFPS(timestamp) {
+    let delta = timestamp - this.lastTimeStamp;
+    delta = delta / 1000;
+    this.lastTimeStamp = timestamp;
+    return Math.round(1 / delta);
+  }
+
+  updateUI(timestamp) {
+    scoreText.textContent = this.gameEngine.myPlayer.score;
+    moneyText.textContent = this.gameEngine.myPlayer.money;
+    fpsText.textContent = this.calculateFPS(timestamp);
+  }
+
   renderLoop(timestamp) {
     this.checkGridIntersections();
     this.gameEngine.gameLoop(timestamp);
+
+    if(this.started) {
+      this.updateUI(timestamp);
+    }
   }
 } 

@@ -17,7 +17,7 @@ export default class Player {
 
     this.setupGameState();
     this.spawnBase();
-    this.spawnArchers();
+    //this.spawnArchers();
   }
 
   spawnArchers() {
@@ -36,7 +36,9 @@ export default class Player {
 
   spawnMinion(index) {
     if(this.money >= this.minionCost) {
-      this.money -= this.minionCost;
+      if(!this.gameOver) {
+        this.money -= this.minionCost;
+      }
 
       let minion = new Minion({
         id: this.minionId++,
@@ -63,6 +65,7 @@ export default class Player {
   }
 
   processReward(reward) {
+    if(this.gameOver) { return; }
     let t = this;
     Object.keys(reward).forEach((key) => {
       t[key] += reward[key];
@@ -118,6 +121,10 @@ export default class Player {
     return index;
   }
 
+  setGameOver() {
+    this.gameOver = true;
+  }
+
   reset() {
     this.minions.forEach(minion => {
       this.scene.remove(minion.viewObj);
@@ -128,6 +135,7 @@ export default class Player {
       this.base = null;
     }
 
+    this.gameOver = false;
     this.spawnBase();
     this.setupGameState();
   }

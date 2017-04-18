@@ -5,20 +5,23 @@
     <!-- endinject -->
   </head>
   <body>
-    <div class="hud">
+    <div id="hud" class="hud hud--hidden">
       <span class="hud__text">Score: <span id="score"></span></span>
       <span class="hud__text">Money: <span id="money"></span></span>
       <span class="hud__text">FPS: <span id="fps"></span></span>
     </div>
 
-    <div id="modal" class="modal">
+    <div id="modal" class="modal modal--visible">
       <div class="modal__content">
-        <div id="startModal" class="modal__section">
-          <button class="modal__button">Start Game</button>
+        <div id="startModal" class="modal__section modal--visible">
+          <span id="startModalMessage" class="modal__message">Welcome to Base Defender! Press start to begin.</span>
+          <br />
+          <button id="startButton" class="modal__button">Start Game</button>
         </div>
         <div id="restartModal" class="modal__section">
-          <span id="modalMessage" class="modal__message"></span>
-          <button class="modal__button">Restart Game</button>
+          <span id="restartModalMessage" class="modal__message"></span>
+          <br />
+          <button id="restartButton" class="modal__button">Restart Game</button>
         </div>
       </div>
     </div>

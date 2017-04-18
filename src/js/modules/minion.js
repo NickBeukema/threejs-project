@@ -48,7 +48,7 @@ export default class Minion {
     this.registerCollision();
   }
 
-  initializeView(startingZ, hitBoxOpacity=.25) {
+  initializeView(startingZ, hitBoxOpacity=0) {
     this.viewObj = new THREE.Group();
 
     let hitGeometry = new THREE.BoxGeometry(3,8,3);
