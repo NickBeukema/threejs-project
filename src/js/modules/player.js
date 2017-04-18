@@ -65,6 +65,9 @@ export default class Player {
 
       let minion = new Minion({
         id: this.minionId++,
+        healthUpgrade: this.upgrades.minionBaseHealth,
+        attackUpgrade: this.upgrades.minionBaseAttack,
+        attackSpeedUpgrade: this.upgrades.minionBaseAttackSpeed,
         playerId: this.id,
         direction: this.direction,
         startingZ: index,

@@ -1,8 +1,20 @@
-import { gridWidth, gridLength, gridSubDiv, minionBaseHealth ,minionBaseAttack ,minionBaseAttackSpeed ,archerBaseAttack ,archerBaseAttackSpeed } from './constants';
+import { gridWidth,
+         gridLength,
+         gridSubDiv,
+         minionBaseHealth,
+         minionBaseAttack,
+         minionBaseAttackSpeed,
+         archerBaseAttack,
+         archerBaseAttackSpeed,
+         baseHealthUpgradeAmount
+       } from './constants';
+
+import Constants from './constants';
 import { bindButtons } from './menu-screen';
 
 // UI Elements
 let scoreText, moneyText, fpsText, baseHealthText, minionBaseHealthText ,minionBaseAttackText ,minionBaseAttackSpeedText ,archerBaseAttackText ,archerBaseAttackSpeedText;
+let baseHealthUpgrade, minionBaseHealthUpgrade ,minionBaseAttackUpgrade ,minionBaseAttackSpeedUpgrade ,archerBaseAttackUpgrade ,archerBaseAttackSpeedUpgrade;
 
 
 // Texture
@@ -131,15 +143,9 @@ export default class GameView {
 
     this.hud.classList.remove('hud--hidden');
     this.hudUpgrade.classList.remove('hud--hidden');
-    scoreText = document.getElementById('score');
-    moneyText = document.getElementById('money');
-    fpsText = document.getElementById('fps');
-    baseHealthText = document.getElementById('baseHealth');
-    minionBaseHealthText = document.getElementById('minionBaseHealth');
-    minionBaseAttackText = document.getElementById('minionBaseAttack');
-    minionBaseAttackSpeedText = document.getElementById('minionBaseAttackSpeed');
-    archerBaseAttackText = document.getElementById('archerBaseAttack');
-    archerBaseAttackSpeedText = document.getElementById('archerBaseAttackSpeed');
+
+    this.initializeUpgradeButtons();
+    this.initializeHudTexts();
 
     this.started = true;
 
@@ -172,7 +178,7 @@ export default class GameView {
     baseHealthText.textContent = Math.max(this.gameEngine.myPlayer.base.health, 0).toFixed(2) + " / " + this.gameEngine.myPlayer.base.maxHealth;
     minionBaseHealthText.textContent = minionBaseHealth * this.gameEngine.myPlayer.upgrades.minionBaseHealth;
     minionBaseAttackText.textContent = minionBaseAttack * this.gameEngine.myPlayer.upgrades.minionBaseAttack;
-    minionBaseAttackSpeedText.textContent = ((minionBaseAttackSpeed * this.gameEngine.myPlayer.upgrades.minionBaseAttackSpeed) / 1000) + 's';
+    minionBaseAttackSpeedText.textContent = ((Constants.minion.baseAttackSpeed + (this.gameEngine.myPlayer.upgrades.minionBaseAttackSpeed * -Constants.minion.upgrades.attackSpeed.amount)) / 1000) + 's';
     archerBaseAttackText.textContent = archerBaseAttack * this.gameEngine.myPlayer.upgrades.archerBaseAttack;
     archerBaseAttackSpeedText.textContent = ((archerBaseAttackSpeed * this.gameEngine.myPlayer.upgrades.archerBaseAttackSpeed) / 1000) + 's';
   }     
@@ -184,5 +190,64 @@ export default class GameView {
     if(this.started) {
       this.updateUI(timestamp);
     }
+  }
+
+  initializeHudTexts() {
+    scoreText = document.getElementById('score');
+    moneyText = document.getElementById('money');
+    fpsText = document.getElementById('fps');
+    baseHealthText = document.getElementById('baseHealth');
+    minionBaseHealthText = document.getElementById('minionBaseHealth');
+    minionBaseAttackText = document.getElementById('minionBaseAttack');
+    minionBaseAttackSpeedText = document.getElementById('minionBaseAttackSpeed');
+    archerBaseAttackText = document.getElementById('archerBaseAttack');
+    archerBaseAttackSpeedText = document.getElementById('archerBaseAttackSpeed');
+  }
+
+  initializeUpgradeButtons() {
+    console.log(Constants);
+    let gameView = this;
+    baseHealthUpgrade =  document.getElementById('baseHealthUpgrade');
+    baseHealthUpgrade.addEventListener('click', function() {
+      if(gameView.gameEngine.myPlayer.money > Constants.base.upgrades.health.cost) {
+        gameView.gameEngine.myPlayer.base.maxHealth += Constants.base.upgrades.health.amount;
+        gameView.gameEngine.myPlayer.base.health += Constants.base.upgrades.health.amount;
+        gameView.gameEngine.myPlayer.money -= Constants.base.upgrades.health.cost;
+      }
+    });
+
+    minionBaseHealthUpgrade =  document.getElementById('minionBaseHealthUpgrade');
+    minionBaseHealthUpgrade.addEventListener('click', function() {
+      if(gameView.gameEngine.myPlayer.money > Constants.minion.upgrades.health.cost) {
+        gameView.gameEngine.myPlayer.upgrades.minionBaseHealth++;
+        gameView.gameEngine.myPlayer.money -= Constants.minion.upgrades.health.cost;
+      }
+    });
+
+    minionBaseAttackUpgrade =  document.getElementById('minionBaseAttackUpgrade');
+    minionBaseAttackUpgrade.addEventListener('click', function() {
+      if(gameView.gameEngine.myPlayer.money > Constants.minion.upgrades.attack.cost) {
+        gameView.gameEngine.myPlayer.upgrades.minionBaseAttack++;
+        gameView.gameEngine.myPlayer.money -= Constants.minion.upgrades.attack.cost;
+      }
+    });
+
+    minionBaseAttackSpeedUpgrade =  document.getElementById('minionBaseAttackSpeedUpgrade');
+    minionBaseAttackSpeedUpgrade.addEventListener('click', function() {
+      if(gameView.gameEngine.myPlayer.money > Constants.minion.upgrades.attackSpeed.cost) {
+        gameView.gameEngine.myPlayer.upgrades.minionBaseAttackSpeed++;
+        gameView.gameEngine.myPlayer.money -= Constants.minion.upgrades.attackSpeed.cost;
+      }
+    });
+
+    archerBaseAttackUpgrade =  document.getElementById('archerBaseAttackUpgrade');
+    archerBaseAttackUpgrade.addEventListener('click', function() {
+
+    });
+
+    archerBaseAttackSpeedUpgrade =  document.getElementById('archerBaseAttackSpeedUpgrade');
+    archerBaseAttackSpeedUpgrade.addEventListener('click', function() {
+
+    });
   }
 } 

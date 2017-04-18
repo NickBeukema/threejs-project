@@ -1,4 +1,5 @@
 import { gridWidth, gridLength, gridSubDiv } from './constants';
+import Constants from './constants'; 
 
 export default class Minion {
   constructor(args) {
@@ -10,12 +11,12 @@ export default class Minion {
     this.startingZ = args.startingZ;
     this.scene = args.scene;
 
-    this.maxHealth = 10;
-    this.health = this.maxHealth;
-    this.attackStrength = 1;
-    this.attackSpeed = 400;
-
+    this.maxHealth = Constants.minion.baseHealth + (args.healthUpgrade * Constants.minion.upgrades.health.amount);
+    this.attackStrength = Constants.minion.baseAttack + (args.attackUpgrade * Constants.minion.upgrades.attack.amount);
+    this.attackSpeed = Constants.minion.baseAttackSpeed + (args.attackSpeedUpgrade * -Constants.minion.upgrades.attackSpeed.amount);
     this.defaultSpeed = .3;
+
+    this.health = this.maxHealth;
     this.speed = this.defaultSpeed;
     this.attackProperties = {
       lastTimeStamp: null,

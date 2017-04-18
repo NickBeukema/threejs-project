@@ -1,3 +1,5 @@
+import Constants from './constants';
+
 export default class Archer {
 
   constructor(args) {
