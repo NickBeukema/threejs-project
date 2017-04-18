@@ -31,3 +31,58 @@
     }
   }
 }
+
+.hud-upgrade {
+  position: absolute;
+  right: 0;
+  top: 0;
+
+  cursor: default;
+
+  padding: 10px;
+
+  font-family: 'Press Start 2P', cursive;
+  color: white;
+
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+
+  &--hidden {
+    display: none;
+  }
+
+  &__button {
+    background-color: white;
+    border: 1px solid #888;
+    width: 350px;
+    font-size: 15px;
+    color: black;
+    font-family: 'Press Start 2P', cursive;
+    text-align: left;
+
+    margin-top: auto;
+    padding: 5px 10px;
+
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+    }
+
+    &:active {
+      background-color: #ddd;
+      //background-color: blue;
+    }
+    
+  }
+}
+
+.upgrade-symbol {
+  float: right;
+  transform: rotate(90deg);
+}

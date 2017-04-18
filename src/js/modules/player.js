@@ -15,6 +15,14 @@ export default class Player {
     this.minionId = 0;
     this.spawnPos = -gridWidth / 2 * this.direction;
 
+    this.upgrades = {
+      minionBaseHealth: 1,
+      minionBaseAttack: 1,
+      minionBaseAttackSpeed: 1,
+      archerBaseAttack: 1,
+      archerBaseAttackSpeed: 1
+    }
+
     this.setupGameState();
     this.spawnBase();
     this.spawnArchers();

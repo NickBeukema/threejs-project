@@ -1,8 +1,8 @@
-import { gridWidth, gridLength, gridSubDiv } from './constants';
+import { gridWidth, gridLength, gridSubDiv, minionBaseHealth ,minionBaseAttack ,minionBaseAttackSpeed ,archerBaseAttack ,archerBaseAttackSpeed } from './constants';
 import { bindButtons } from './menu-screen';
 
 // UI Elements
-let scoreText, moneyText, fpsText, baseHealth, minionBaseHealth ,minionBaseAttack ,minionBaseAttackSpeed ,archerBaseAttack ,archerBaseAttackSpeed;
+let scoreText, moneyText, fpsText, baseHealthText, minionBaseHealthText ,minionBaseAttackText ,minionBaseAttackSpeedText ,archerBaseAttackText ,archerBaseAttackSpeedText;
 
 
 // Texture
@@ -32,6 +32,7 @@ export default class GameView {
     this.camera.lookAt(this.scene.position);
 
     this.hud = document.getElementById('hud');
+    this.hudUpgrade = document.getElementById('hud-upgrade');
     this.lastTimeStamp = 0;
     this.started = false;
 
@@ -129,15 +130,16 @@ export default class GameView {
     this.gameEngine.restart();
 
     this.hud.classList.remove('hud--hidden');
+    this.hudUpgrade.classList.remove('hud--hidden');
     scoreText = document.getElementById('score');
     moneyText = document.getElementById('money');
     fpsText = document.getElementById('fps');
-    baseHealth = document.getElementById('baseHealth');
-    minionBaseHealth = document.getElementById('minionBaseHealth');
-    minionBaseAttack = document.getElementById('minionBaseAttack');
-    minionBaseAttackSpeed = document.getElementById('minionBaseAttackSpeed');
-    archerBaseAttack = document.getElementById('archerBaseAttack');
-    archerBaseAttackSpeed = document.getElementById('archerBaseAttackSpeed');
+    baseHealthText = document.getElementById('baseHealth');
+    minionBaseHealthText = document.getElementById('minionBaseHealth');
+    minionBaseAttackText = document.getElementById('minionBaseAttack');
+    minionBaseAttackSpeedText = document.getElementById('minionBaseAttackSpeed');
+    archerBaseAttackText = document.getElementById('archerBaseAttack');
+    archerBaseAttackSpeedText = document.getElementById('archerBaseAttackSpeed');
 
     this.started = true;
 
@@ -167,8 +169,12 @@ export default class GameView {
     scoreText.textContent = this.gameEngine.myPlayer.score;
     moneyText.textContent = this.gameEngine.myPlayer.money;
     fpsText.textContent = this.calculateFPS(timestamp);
-    baseHealth.textContent = this.gameEngine.myPlayer.base.health.toFixed(2) + " / " + this.gameEngine.myPlayer.base.maxHealth
-
+    baseHealthText.textContent = Math.max(this.gameEngine.myPlayer.base.health, 0).toFixed(2) + " / " + this.gameEngine.myPlayer.base.maxHealth;
+    minionBaseHealthText.textContent = minionBaseHealth * this.gameEngine.myPlayer.upgrades.minionBaseHealth;
+    minionBaseAttackText.textContent = minionBaseAttack * this.gameEngine.myPlayer.upgrades.minionBaseAttack;
+    minionBaseAttackSpeedText.textContent = ((minionBaseAttackSpeed * this.gameEngine.myPlayer.upgrades.minionBaseAttackSpeed) / 1000) + 's';
+    archerBaseAttackText.textContent = archerBaseAttack * this.gameEngine.myPlayer.upgrades.archerBaseAttack;
+    archerBaseAttackSpeedText.textContent = ((archerBaseAttackSpeed * this.gameEngine.myPlayer.upgrades.archerBaseAttackSpeed) / 1000) + 's';
   }     
 
   renderLoop(timestamp) {
