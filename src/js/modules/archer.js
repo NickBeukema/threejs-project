@@ -16,6 +16,21 @@ export default class Archer {
     this.targetList = [];
     this.arrows = [];
 
+    let _90deg = (90/180) * Math.PI;
+    let _135deg = (135/180) * Math.PI;
+
+    this.animationProperties = {
+      arm: {
+        startingAngle: _135deg,
+        endingAngle: _90deg,
+        angleDifference: _135deg - _90deg,
+        speedDown: 200,
+        speedUp: 150,
+        lastAnimate: null
+      },
+      arrowSpeed: 500
+    }
+
     this.attackProperties = {
       lastAttack: 0
     };
@@ -130,7 +145,6 @@ export default class Archer {
     if(target !== null && target.viewObj) {
       this.nextTarget = {
         target: target,
-        timestamp: timestamp,
         callback: (target) => {
           target.health -= this.getAttackValue();
           if(target.health <= 0) {
@@ -143,16 +157,6 @@ export default class Archer {
         }
       }
       this.initiateAttack = true;
-      //this.spawnArrow(target, timestamp, (target) => {
-        //target.health -= this.getAttackValue();
-        //if(target.health <= 0) {
-          //this.player.processReward(target.killReward);
-
-          //target.attack = false;
-          //target.destroy = true;
-          //this.removeTarget(target.collider.id);
-        //}
-      //});
     }
 
     this.attackProperties.lastAttack = timestamp;
@@ -243,25 +247,47 @@ export default class Archer {
     });
   }
 
-  animateAttack() {
+  animateAttack(timestamp) {
     if(this.rightArm && this.initiateAttack) {
-      if(this.rightArm.rotation.z > (90/180) * Math.PI) {
-        this.rightArm.rotation.z -= 0.08;
+      if(this.rightArm.rotation.z > this.animationProperties.arm.endingAngle) {
+        if(this.animationProperties.arm.lastAnimate === null) {
+          this.animationProperties.arm.lastAnimate = timestamp;
+        }
+
+        let delta = timestamp - this.animationProperties.arm.lastAnimate;
+        let timeRatio = delta / this.animationProperties.arm.speedDown;
+        let degreeChange = this.animationProperties.arm.angleDifference * timeRatio;
+
+
+
+        this.rightArm.rotation.z -= degreeChange;
+        this.animationProperties.arm.lastAnimate = timestamp;
       } else {
         this.spawnArrow(
             this.nextTarget.target,
-            this.nextTarget.timestamp,
+            timestamp,
             this.nextTarget.callback );
 
         this.resetAttackAnimation();
       }
+
     }
 
     if(this.rightArm && this.recharging) {
-      if(this.rightArm.rotation.z < (135/180) * Math.PI) {
-        this.rightArm.rotation.z += 0.18;
+      if(this.rightArm.rotation.z < this.animationProperties.arm.startingAngle) {
+        if(this.animationProperties.arm.lastAnimate === null) {
+          this.animationProperties.arm.lastAnimate = timestamp;
+        }
+
+        let delta = timestamp - this.animationProperties.arm.lastAnimate;
+        let timeRatio = delta / this.animationProperties.arm.speedUp;
+        let degreeChange = this.animationProperties.arm.angleDifference * timeRatio;
+
+        this.rightArm.rotation.z += degreeChange;
+        this.animationProperties.arm.lastAnimate = timestamp;
       } else {
         this.recharging = false;
+        this.animationProperties.arm.lastAnimate = null;
       }
     }
   }
@@ -269,13 +295,13 @@ export default class Archer {
   resetAttackAnimation() {
     this.initiateAttack = false;
     this.recharging = true;
-    //this.rightArm.rotation.z = (135 / 180) * Math.PI;
+    this.animationProperties.arm.lastAnimate = null;
   }
 
   runLoop(timestamp) {
     this.attackProcedure(timestamp);
     this.animateArrows(timestamp);
-    this.animateAttack();
+    this.animateAttack(timestamp);
     this.collider.update();
   }
 }
