@@ -23,4 +23,11 @@
   &--hidden {
     display: none;
   }
+  
+  .gameInfo {
+    margin-top: 15px;
+    .hud__text {
+      line-height: 1.75;
+    }
+  }
 }

@@ -10,9 +10,9 @@ export default class Base {
 
     this.baseWidth = gridWidth;
     this.baseHeight = 20;
-    this.baseDepth = 20;
+    this.baseDepth = 10;
 
-    this.maxHealth = 20;
+    this.maxHealth = 250;
     this.health = this.maxHealth;
 
     this.hitBoxBuffer = 2;

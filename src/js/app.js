@@ -10,7 +10,7 @@ let globals;
 
 let gameEngine, gameView;
 let rendererStats;
-let performance = false;
+let performance = true;
 
 function init() {
   let { scene, camera, renderer } = setupScreenView();

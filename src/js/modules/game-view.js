@@ -2,7 +2,7 @@ import { gridWidth, gridLength, gridSubDiv } from './constants';
 import { bindButtons } from './menu-screen';
 
 // UI Elements
-let scoreText, moneyText, fpsText, hud;
+let scoreText, moneyText, fpsText, baseHealth, minionBaseHealth ,minionBaseAttack ,minionBaseAttackSpeed ,archerBaseAttack ,archerBaseAttackSpeed;
 
 
 // Texture
@@ -132,6 +132,12 @@ export default class GameView {
     scoreText = document.getElementById('score');
     moneyText = document.getElementById('money');
     fpsText = document.getElementById('fps');
+    baseHealth = document.getElementById('baseHealth');
+    minionBaseHealth = document.getElementById('minionBaseHealth');
+    minionBaseAttack = document.getElementById('minionBaseAttack');
+    minionBaseAttackSpeed = document.getElementById('minionBaseAttackSpeed');
+    archerBaseAttack = document.getElementById('archerBaseAttack');
+    archerBaseAttackSpeed = document.getElementById('archerBaseAttackSpeed');
 
     this.started = true;
 
@@ -161,7 +167,9 @@ export default class GameView {
     scoreText.textContent = this.gameEngine.myPlayer.score;
     moneyText.textContent = this.gameEngine.myPlayer.money;
     fpsText.textContent = this.calculateFPS(timestamp);
-  }
+    baseHealth.textContent = this.gameEngine.myPlayer.base.health.toFixed(2) + " / " + this.gameEngine.myPlayer.base.maxHealth
+
+  }     
 
   renderLoop(timestamp) {
     this.checkGridIntersections();

@@ -17,7 +17,7 @@ export default class Player {
 
     this.setupGameState();
     this.spawnBase();
-    //this.spawnArchers();
+    this.spawnArchers();
   }
 
   spawnArchers() {
@@ -103,6 +103,12 @@ export default class Player {
   }
 
   destroyBase() {
+    this.archers.forEach(archer => {
+      this.scene.remove(archer.viewObj);
+      this.colliderList.splice(this.findColliderIndex(archer.collider.id), 1);
+    });
+    this.archers.length = 0;
+    
     this.scene.remove(this.base.viewObj);
     this.colliderList.splice(this.findColliderIndex(this.base.collider.id), 1);
     this.base = null;
@@ -135,9 +141,14 @@ export default class Player {
       this.base = null;
     }
 
+    this.archers.forEach(archers => {
+      this.scene.remove(archers.viewObj);
+    });
+
     this.gameOver = false;
-    this.spawnBase();
     this.setupGameState();
+    this.spawnBase();
+    this.spawnArchers();
   }
 
 
