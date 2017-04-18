@@ -15,13 +15,7 @@ export default class Player {
     this.minionId = 0;
     this.spawnPos = -gridWidth / 2 * this.direction;
 
-    this.upgrades = {
-      minionBaseHealth: 0,
-      minionBaseAttack: 0,
-      minionBaseAttackSpeed: 0,
-      archerBaseAttack: 0,
-      archerBaseAttackSpeed: 0
-    }
+    this.setUpgradeValues();
     this.loader = new THREE.ObjectLoader();
 
     this.setupGameState();
@@ -180,6 +174,7 @@ export default class Player {
     });
 
     this.gameOver = false;
+    this.setUpgradeValues();
     this.setupGameState();
     this.spawnBase();
     this.spawnArchers();
@@ -193,5 +188,15 @@ export default class Player {
     this.money = 4000;
     this.minionCost = 50;
     this.lost = false;
+  }
+
+  setUpgradeValues() {
+    this.upgrades = {
+      minionBaseHealth: 0,
+      minionBaseAttack: 0,
+      minionBaseAttackSpeed: 0,
+      archerBaseAttack: 0,
+      archerBaseAttackSpeed: 0
+    }
   }
 }
