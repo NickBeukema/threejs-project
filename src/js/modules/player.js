@@ -16,11 +16,11 @@ export default class Player {
     this.spawnPos = -gridWidth / 2 * this.direction;
 
     this.upgrades = {
-      minionBaseHealth: 1,
-      minionBaseAttack: 1,
-      minionBaseAttackSpeed: 1,
-      archerBaseAttack: 1,
-      archerBaseAttackSpeed: 1
+      minionBaseHealth: 0,
+      minionBaseAttack: 0,
+      minionBaseAttackSpeed: 0,
+      archerBaseAttack: 0,
+      archerBaseAttackSpeed: 0
     }
     this.loader = new THREE.ObjectLoader();
 
@@ -30,7 +30,16 @@ export default class Player {
   }
 
   spawnArchers() {
-    let archer = new Archer({ scene: this.scene, colliderList: this.colliderList, startingZ: 2, startingY: 20, startingX: this.spawnPos, direction: this.direction, player: this });
+    let archer = new Archer({ 
+      scene: this.scene, 
+      colliderList: this.colliderList, 
+      startingZ: 2, 
+      startingY: 20, 
+      startingX: this.spawnPos, 
+      direction: this.direction, 
+      player: this 
+    });
+    
     this.archers.push(archer);
 
     this.loader.load('./geometry/wizard.json', (obj) => {
