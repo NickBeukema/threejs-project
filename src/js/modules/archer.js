@@ -8,7 +8,7 @@ export default class Archer {
 
     this.direction = args.direction;
     this.startingZ = args.startingZ;
-    this.startingY = args.startingY + 3;
+    this.startingY = args.startingY + 4;
     this.startingX = args.startingX - (4 * this.direction);
 
     this.targetList = [];
@@ -18,7 +18,7 @@ export default class Archer {
       lastAttack: 0
     };
 
-    this.attackSpeed = 500;
+    this.attackSpeed = 1500;
     this.arrowSpeed = 500;
     this.attackStrength = 20;
     this.arrowId = 0;
@@ -29,7 +29,7 @@ export default class Archer {
   initializeView(hitBoxOpacity=0) {
     this.viewObj = new THREE.Group();
 
-    let bodyG = new THREE.BoxGeometry(3, 3, 3);
+    let bodyG = new THREE.BoxGeometry(0.01, 0.013, 0.013);
     let bodyMat = new THREE.MeshBasicMaterial({ color: 0x00FF00 });
     this.body = new THREE.Mesh(bodyG, bodyMat);
 
@@ -44,8 +44,6 @@ export default class Archer {
     this.viewObj.add(this.body);
     this.viewObj.add(this.hitBox);
 
-
-    this.scene.add(this.viewObj);
     this.viewObj.position.set(this.startingX, this.startingY, this.startingZ);
   }
 
@@ -105,6 +103,7 @@ export default class Archer {
 
   canAttack(timestamp) {
     if(this.targetList.length === 0) { return false; }
+    if(this.initiateAttack || this.recharging) { return false; }
 
     let delta = timestamp - this.attackProperties.lastAttack;
     return delta >= this.attackSpeed;
@@ -127,29 +126,45 @@ export default class Archer {
 
     let target = this.determineTarget();
     if(target !== null && target.viewObj) {
-      this.spawnArrow(target, timestamp, (target) => {
-        target.health -= this.getAttackValue();
-        if(target.health <= 0) {
-          this.player.processReward(target.killReward);
+      this.nextTarget = {
+        target: target,
+        timestamp: timestamp,
+        callback: (target) => {
+          target.health -= this.getAttackValue();
+          if(target.health <= 0) {
+            this.player.processReward(target.killReward);
 
-          target.attack = false;
-          target.destroy = true;
-          this.removeTarget(target.collider.id);
+            target.attack = false;
+            target.destroy = true;
+            this.removeTarget(target.collider.id);
+          }
         }
-      });
+      }
+      this.initiateAttack = true;
+      //this.spawnArrow(target, timestamp, (target) => {
+        //target.health -= this.getAttackValue();
+        //if(target.health <= 0) {
+          //this.player.processReward(target.killReward);
+
+          //target.attack = false;
+          //target.destroy = true;
+          //this.removeTarget(target.collider.id);
+        //}
+      //});
     }
-    
+
     this.attackProperties.lastAttack = timestamp;
   }
 
+
   spawnArrow(target, timestamp, callback) {
-    let arrowG = new THREE.BoxGeometry(1, 1, 1);
-    let arrowMat = new THREE.MeshBasicMaterial({ color: 0x00FF00 });
+    let arrowG = new THREE.SphereGeometry(1, 10, 10);
+    let arrowMat = new THREE.MeshBasicMaterial({ color: 0x9C3724 });
     let arrow = new THREE.Mesh(arrowG, arrowMat);
     arrow.name = "Arrow";
     this.scene.add(arrow);
 
-    arrow.position.set(this.startingX, this.startingY, this.startingZ);
+    arrow.position.set(this.startingX, this.startingY + 2, this.startingZ);
 
     let id = this.arrowId++;
 
@@ -223,13 +238,42 @@ export default class Archer {
       arrow.obj.position.y = arrow.yFunction(delta);
       arrow.obj.position.x = arrow.xFunction(delta);
       arrow.obj.position.z = arrow.zFunction(delta);
-
     });
   }
 
-  runLoop(timestamp) {     
+  animateAttack() {
+    if(this.rightArm && this.initiateAttack) {
+      if(this.rightArm.rotation.z > (90/180) * Math.PI) {
+        this.rightArm.rotation.z -= 0.08;
+      } else {
+        this.spawnArrow(
+            this.nextTarget.target,
+            this.nextTarget.timestamp,
+            this.nextTarget.callback );
+
+        this.resetAttackAnimation();
+      }
+    }
+
+    if(this.rightArm && this.recharging) {
+      if(this.rightArm.rotation.z < (135/180) * Math.PI) {
+        this.rightArm.rotation.z += 0.18;
+      } else {
+        this.recharging = false;
+      }
+    }
+  }
+
+  resetAttackAnimation() {
+    this.initiateAttack = false;
+    this.recharging = true;
+    //this.rightArm.rotation.z = (135 / 180) * Math.PI;
+  }
+
+  runLoop(timestamp) {
     this.attackProcedure(timestamp);
     this.animateArrows(timestamp);
+    this.animateAttack();
     this.collider.update();
   }
 }

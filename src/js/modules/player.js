@@ -22,6 +22,7 @@ export default class Player {
       archerBaseAttack: 1,
       archerBaseAttackSpeed: 1
     }
+    this.loader = new THREE.ObjectLoader();
 
     this.setupGameState();
     this.spawnBase();
@@ -29,7 +30,21 @@ export default class Player {
   }
 
   spawnArchers() {
-    this.archers.push(new Archer({ scene: this.scene, colliderList: this.colliderList, startingZ: 2, startingY: 20, startingX: this.spawnPos, direction: this.direction, player: this }));
+    let archer = new Archer({ scene: this.scene, colliderList: this.colliderList, startingZ: 2, startingY: 20, startingX: this.spawnPos, direction: this.direction, player: this });
+    this.archers.push(archer);
+
+    this.loader.load('./geometry/wizard.json', (obj) => {
+      obj.position.y = -4;
+      archer.viewObj.add(obj);
+
+      archer.rightArm = archer.viewObj.children[2].children[1];
+      archer.rightArm.rotation.z = (135 / 180) * Math.PI;
+      if(archer.direction === -1) {
+        archer.viewObj.children[2].rotation.y = Math.PI;
+      }
+
+      this.scene.add(archer.viewObj);
+    });
   }
 
   spawnBase() {
@@ -58,8 +73,7 @@ export default class Player {
       });
 
       this.minions.push(minion);
-      let loader = new THREE.ObjectLoader();
-      loader.load('./geometry/model.json', (obj) => {
+      this.loader.load('./geometry/model.json', (obj) => {
         obj.position.y = -4;
         minion.viewObj.add(obj);
 
