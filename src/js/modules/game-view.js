@@ -175,12 +175,15 @@ export default class GameView {
     scoreText.textContent = this.gameEngine.myPlayer.score;
     moneyText.textContent = this.gameEngine.myPlayer.money;
     fpsText.textContent = this.calculateFPS(timestamp);
+    
     baseHealthText.textContent = Math.max(this.gameEngine.myPlayer.base.health, 0).toFixed(2) + " / " + this.gameEngine.myPlayer.base.maxHealth;
-    minionBaseHealthText.textContent = minionBaseHealth * this.gameEngine.myPlayer.upgrades.minionBaseHealth;
-    minionBaseAttackText.textContent = minionBaseAttack * this.gameEngine.myPlayer.upgrades.minionBaseAttack;
-    minionBaseAttackSpeedText.textContent = ((Constants.minion.baseAttackSpeed + (this.gameEngine.myPlayer.upgrades.minionBaseAttackSpeed * -Constants.minion.upgrades.attackSpeed.amount)) / 1000) + 's';
-    archerBaseAttackText.textContent = archerBaseAttack * this.gameEngine.myPlayer.upgrades.archerBaseAttack;
-    archerBaseAttackSpeedText.textContent = ((archerBaseAttackSpeed * this.gameEngine.myPlayer.upgrades.archerBaseAttackSpeed) / 1000) + 's';
+    
+    minionBaseHealthText.textContent = Constants.minion.baseHealth + (Constants.minion.upgrades.health.amount * this.gameEngine.myPlayer.upgrades.minionBaseHealth);
+    minionBaseAttackText.textContent = Constants.minion.baseAttack + (Constants.minion.upgrades.attack.amount * this.gameEngine.myPlayer.upgrades.minionBaseAttack);
+    minionBaseAttackSpeedText.textContent = ((Constants.minion.baseAttackSpeed + (this.gameEngine.myPlayer.upgrades.minionBaseAttackSpeed * -Constants.minion.upgrades.attackSpeed.amount)) / 1000).toFixed(2) + 's';
+    
+    archerBaseAttackText.textContent = Constants.archer.baseAttack + (this.gameEngine.myPlayer.upgrades.archerBaseAttack * Constants.archer.upgrades.attack.amount);
+    archerBaseAttackSpeedText.textContent = ((Constants.archer.baseAttackSpeed - (this.gameEngine.myPlayer.upgrades.archerBaseAttackSpeed * Constants.archer.upgrades.attackSpeed.amount)) / 1000).toFixed(2) + "s";
   }     
 
   renderLoop(timestamp) {
@@ -205,7 +208,6 @@ export default class GameView {
   }
 
   initializeUpgradeButtons() {
-    console.log(Constants);
     let gameView = this;
     baseHealthUpgrade =  document.getElementById('baseHealthUpgrade');
     baseHealthUpgrade.addEventListener('click', function() {
@@ -242,12 +244,27 @@ export default class GameView {
 
     archerBaseAttackUpgrade =  document.getElementById('archerBaseAttackUpgrade');
     archerBaseAttackUpgrade.addEventListener('click', function() {
+      if(gameView.gameEngine.myPlayer.money > Constants.archer.upgrades.attack.cost) {
+        gameView.gameEngine.myPlayer.archers.forEach((archer) => {
+          archer.attackStrength += Constants.archer.upgrades.attack.amount;
+        })
 
+        gameView.gameEngine.myPlayer.upgrades.archerBaseAttack++;
+        gameView.gameEngine.myPlayer.money -= Constants.archer.upgrades.attack.cost;
+      }
     });
 
     archerBaseAttackSpeedUpgrade =  document.getElementById('archerBaseAttackSpeedUpgrade');
     archerBaseAttackSpeedUpgrade.addEventListener('click', function() {
+      if(gameView.gameEngine.myPlayer.money > Constants.archer.upgrades.attackSpeed.cost) {
+        gameView.gameEngine.myPlayer.archers.forEach((archer) => {
+          archer.attackSpeed -= Constants.archer.upgrades.attackSpeed.amount;
+          archer.arrowSpeed -= Constants.archer.upgrades.attackSpeed.amount;
+        })
 
+        gameView.gameEngine.myPlayer.upgrades.archerBaseAttackSpeed++;
+        gameView.gameEngine.myPlayer.money -= Constants.archer.upgrades.attackSpeed.cost;
+      }
     });
   }
 } 

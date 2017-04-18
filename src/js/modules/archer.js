@@ -35,9 +35,9 @@ export default class Archer {
       lastAttack: 0
     };
 
-    this.attackSpeed = 1500;
-    this.arrowSpeed = 500;
-    this.attackStrength = 20;
+    this.attackSpeed = Constants.archer.baseAttackSpeed;
+    this.arrowSpeed = Constants.archer.baseArrowSpeed;
+    this.attackStrength = Constants.archer.baseAttack;
     this.arrowId = 0;
     this.initializeView();
     this.registerCollision();
