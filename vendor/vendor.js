@@ -1258,4 +1258,72 @@ THREEx.ColliderSystem    = function(){
 }
 
 
+var THREEx	= THREEx	|| {}
+
+THREEx.createGrassTufts	= function(positions){
+	// create the initial geometry
+	var geometry	= new THREE.PlaneGeometry(0.4, 0.2)
+	geometry.applyMatrix( new THREE.Matrix4().makeTranslation( 0, geometry.parameters.height/2, 0 ) );
+
+
+	// Tweat the normal for better lighting
+	// - normals from http://http.developer.nvidia.com/GPUGems/gpugems_ch07.html
+	// - normals inspired from http://simonschreibt.de/gat/airborn-trees/
+	geometry.faces.forEach(function(face){
+		face.vertexNormals.forEach(function(normal){
+			normal.set(0.0,1.0,0.0).normalize()
+		})
+	})
+	
+	// create each tuft and merge their geometry for performance
+	var mergedGeo	= new THREE.Geometry();
+	for(var i = 0; i < positions.length; i++){
+		var position	= positions[i]			
+		var baseAngle	= Math.PI*2*Math.random()
+
+		var nPlanes	= 2
+		for(var j = 0; j < nPlanes; j++){
+			var angle	= baseAngle+j*Math.PI/nPlanes
+
+			// First plane
+			var object3d	= new THREE.Mesh(geometry, material)
+			object3d.scale.x = 1;
+			object3d.scale.y = 10;
+			object3d.scale.z = 1;
+			object3d.rotateY(angle)
+			object3d.position.copy(position)
+			object3d.updateMatrix();
+			mergedGeo.merge(object3d.geometry, object3d.matrix);
+
+			// The other side of the plane
+			// - impossible to use ```side : THREE.BothSide``` as 
+			//   it would mess up the normals
+			var object3d	= new THREE.Mesh(geometry, material);
+			object3d.scale.x = 10;
+			object3d.scale.y = 10;
+			object3d.scale.z = 10;
+			object3d.rotateY(angle+Math.PI)
+			object3d.position.copy(position)
+			object3d.updateMatrix();
+			mergedGeo.merge(object3d.geometry, object3d.matrix);
+		}
+	}
+
+
+	// load the texture
+	var textureUrl	= THREEx.createGrassTufts.baseUrl+'images/grass01.png'
+	var texture	= new THREE.TextureLoader().load(textureUrl);
+	// build the material
+	var material	= new THREE.MeshPhongMaterial({
+		map		: texture,
+		color		: 'grey',
+		emissive	: 'darkgreen',
+		alphaTest	: 0.7,
+	})
+	// create the mesh
+	var mesh	= new THREE.Mesh(mergedGeo, material)
+	return mesh	
+}
+
+THREEx.createGrassTufts.baseUrl	= "../"
 var THREEx=THREEx||{};THREEx.RendererStats=function(){var c=document.createElement("div");c.style.cssText="width:80px;opacity:0.9;cursor:pointer";var d=document.createElement("div");d.style.cssText="padding:0 0 3px 3px;text-align:left;background-color:#200;",c.appendChild(d);var e=document.createElement("div");e.style.cssText="color:#f00;font-family:Helvetica,Arial,sans-serif;font-size:9px;font-weight:bold;line-height:15px",e.innerHTML="WebGLRenderer",d.appendChild(e);for(var f=[],g=9,h=0;h<g;h++)f[h]=document.createElement("div"),f[h].style.cssText="color:#f00;background-color:#311;font-family:Helvetica,Arial,sans-serif;font-size:9px;font-weight:bold;line-height:15px",d.appendChild(f[h]),f[h].innerHTML="-";var i=Date.now();return{domElement:c,update:function(a){if(console.assert(a instanceof THREE.WebGLRenderer),!(Date.now()-i<1e3/30)){i=Date.now();var b=0;f[b++].textContent="== Memory =====",f[b++].textContent="Programs: "+a.info.memory.programs,f[b++].textContent="Geometries: "+a.info.memory.geometries,f[b++].textContent="Textures: "+a.info.memory.textures,f[b++].textContent="== Render =====",f[b++].textContent="Calls: "+a.info.render.calls,f[b++].textContent="Vertices: "+a.info.render.vertices,f[b++].textContent="Faces: "+a.info.render.faces,f[b++].textContent="Points: "+a.info.render.points}}}};

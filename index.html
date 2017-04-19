@@ -6,20 +6,39 @@
     <!-- endinject -->
   </head>
   <body>
-    <div class="hud">
+    <div id="hud" class="hud hud--hidden">
       <span class="hud__text">Score: <span id="score"></span></span>
       <span class="hud__text">Money: <span id="money"></span></span>
       <span class="hud__text">FPS: <span id="fps"></span></span>
+        <div class="gameInfo">
+          <span class="hud__text">Base Health: <span id="baseHealth"></span></span> <br>
+          <span class="hud__text">Minion Health: <span id="minionBaseHealth"></span></span> <br>
+          <span class="hud__text">Minion Attack: <span id="minionBaseAttack"></span></span> <br>
+          <span class="hud__text">Minion Atk Speed: <span id="minionBaseAttackSpeed"></span></span> <br>
+          <span class="hud__text">Archer Attack: <span id="archerBaseAttack"></span></span> <br>
+          <span class="hud__text">Archer Atk Speed: <span id="archerBaseAttackSpeed"></span></span> <br>
+        </div>
+    </div>
+    <div id="hud-upgrade" class="hud-upgrade hud--hidden">
+        <button id="baseHealthUpgrade" class="hud-upgrade__button">Base Health <span class="upgrade-symbol">&#10096;</span></button><br>
+        <button id="minionBaseHealthUpgrade" class="hud-upgrade__button">Minion Health <span class="upgrade-symbol">&#10096;</span></button><br>
+        <button id="minionBaseAttackUpgrade" class="hud-upgrade__button">Minion Attack <span class="upgrade-symbol">&#10096;</span></button><br>
+        <button id="minionBaseAttackSpeedUpgrade" class="hud-upgrade__button">Minion Atk Speed <span class="upgrade-symbol">&#10096;</span></button><br>
+        <button id="archerBaseAttackUpgrade" class="hud-upgrade__button">Archer Attack <span class="upgrade-symbol">&#10096;</span></button><br>
+        <button id="archerBaseAttackSpeedUpgrade" class="hud-upgrade__button">Archer Atk Speed <span class="upgrade-symbol">&#10096;</span></button><br>
     </div>
 
-    <div id="modal" class="modal">
+    <div id="modal" class="modal modal--visible">
       <div class="modal__content">
-        <div id="startModal" class="modal__section">
-          <button class="modal__button">Start Game</button>
+        <div id="startModal" class="modal__section modal--visible">
+          <span id="startModalMessage" class="modal__message">Welcome to Base Defender! Press start to begin.</span>
+          <br />
+          <button id="startButton" class="modal__button">Start Game</button>
         </div>
         <div id="restartModal" class="modal__section">
-          <span id="modalMessage" class="modal__message"></span>
-          <button class="modal__button">Restart Game</button>
+          <span id="restartModalMessage" class="modal__message"></span>
+          <br />
+          <button id="restartButton" class="modal__button">Restart Game</button>
         </div>
       </div>
     </div>
