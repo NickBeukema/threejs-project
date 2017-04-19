@@ -35,8 +35,42 @@ export default class Base {
       this.baseWidth
     );
 
-    let shapeMaterial = new THREE.MeshPhongMaterial({color: 0x555555, specular: 0x222222, shininess: 5 });
-    let shapeMesh = new THREE.Mesh(shapeGeometry, shapeMaterial);
+
+    let textureLoader = new THREE.TextureLoader();
+    let normalMap = textureLoader.load('textures/rock-normal-map.jpg');
+    let longTexture = textureLoader.load('textures/brick-wall.jpg');
+    let skinnyTexture = textureLoader.load('textures/brick-wall.jpg');
+    let sideTexture = textureLoader.load('textures/brick-wall.jpg');
+    let baseColor = 0x555555;
+
+    longTexture.wrapS = longTexture.wrapT = THREE.RepeatWrapping;
+    longTexture.repeat.set(2, 1);
+
+    skinnyTexture.wrapS = skinnyTexture.wrapT = THREE.RepeatWrapping;
+    skinnyTexture.repeat.set(1, 3);
+
+    sideTexture.wrapS = sideTexture.wrapT = THREE.RepeatWrapping;
+    sideTexture.repeat.set(1, 1);
+
+    let skinnyMat = new THREE.MeshPhongMaterial({color: 0x333333, specular: 0x333333, shininess: 15, normalMap: textureLoader.load('textures/rock-normal-map.jpg'), normalScale: new THREE.Vector2( 0.05, 1 ), map: skinnyTexture });
+
+
+    let longMat = new THREE.MeshPhongMaterial({color: baseColor, specular: 0x333333, shininess: 15, normalMap: normalMap, normalScale: new THREE.Vector2( 1, 1 ), map: longTexture });
+
+    let sideMat = new THREE.MeshPhongMaterial({color: baseColor, specular: 0x333333, shininess: 15, normalMap: normalMap, normalScale: new THREE.Vector2( 1, 1 ), map: sideTexture });
+
+    let shapeMaterials = [
+      longMat, // Right
+      longMat, // Left
+      skinnyMat, // Top
+      sideMat, // Back
+      sideMat, // Front
+      skinnyMat, // Bottom
+
+    ]
+
+    let shapeMesh = new THREE.Mesh(shapeGeometry, new THREE.MultiMaterial(shapeMaterials));
+
 
     let hitGeometry = new THREE.BoxGeometry(
       this.baseDepth + this.hitBoxBuffer,

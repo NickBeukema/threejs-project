@@ -59,7 +59,7 @@ export default class GameView {
     let lightAmbient = new THREE.AmbientLight(0x666666, 3);
     let lightSource = new THREE.PointLight(0x888888);
 
-    lightSource.position.set(3, 3, 3);
+    lightSource.position.set(0, 40, 50);
 
     this.scene.add(lightAmbient);
     this.scene.add(lightSource);
