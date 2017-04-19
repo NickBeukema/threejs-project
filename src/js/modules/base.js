@@ -44,7 +44,7 @@ export default class Base {
     let baseColor = 0x555555;
 
     longTexture.wrapS = longTexture.wrapT = THREE.RepeatWrapping;
-    longTexture.repeat.set(2, 1);
+    longTexture.repeat.set(3, 1);
 
     skinnyTexture.wrapS = skinnyTexture.wrapT = THREE.RepeatWrapping;
     skinnyTexture.repeat.set(1, 3);

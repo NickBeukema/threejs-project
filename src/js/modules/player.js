@@ -33,17 +33,19 @@ export default class Player {
       direction: this.direction, 
       player: this 
     });
-    
+
     this.archers.push(archer);
 
     this.loader.load('./geometry/wizard.json', (obj) => {
       obj.position.y = -4;
       archer.viewObj.add(obj);
 
-      archer.rightArm = archer.viewObj.children[2].children[1];
+      archer.bodyModel = archer.viewObj.children[2];
+      archer.rightArm = archer.bodyModel.children[1];
       archer.rightArm.rotation.z = (135 / 180) * Math.PI;
       if(archer.direction === -1) {
         archer.viewObj.children[2].rotation.y = Math.PI;
+        archer.startingRotation = Math.PI;
       }
 
       this.scene.add(archer.viewObj);

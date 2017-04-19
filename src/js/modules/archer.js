@@ -16,6 +16,7 @@ export default class Archer {
     this.targetList = [];
     this.arrows = [];
 
+    this.startingRotation = 0;
     let _90deg = (90/180) * Math.PI;
     let _135deg = (135/180) * Math.PI;
 
@@ -259,7 +260,6 @@ export default class Archer {
         let degreeChange = this.animationProperties.arm.angleDifference * timeRatio;
 
 
-
         this.rightArm.rotation.z -= degreeChange;
         this.animationProperties.arm.lastAnimate = timestamp;
       } else {
@@ -290,12 +290,24 @@ export default class Archer {
         this.animationProperties.arm.lastAnimate = null;
       }
     }
+
+    if(this.nextTarget && this.nextTarget.target) {
+      let angleTowardsTarget = this.calculateAngleToTarget(this.nextTarget.target);
+      this.bodyModel.rotation.y = angleTowardsTarget + this.startingRotation;
+    }
   }
 
   resetAttackAnimation() {
     this.initiateAttack = false;
     this.recharging = true;
     this.animationProperties.arm.lastAnimate = null;
+  }
+
+  calculateAngleToTarget(target) {
+    let xDiff = target.viewObj.position.x - this.viewObj.position.x;
+    let zDiff = target.viewObj.position.z - this.viewObj.position.z;
+    let diffRatio = zDiff / xDiff;
+    return (Math.PI * -this.direction) - Math.atan(diffRatio) + Math.PI;
   }
 
   runLoop(timestamp) {
