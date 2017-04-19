@@ -33,6 +33,7 @@ export default class GameView {
     this.gameEngine = gameEngine;
 
     this.setupGrid();
+    this.setupGrassField();
     this.setupLight();
 
     this.mouse = { x: -10000, y: 0 };
@@ -57,23 +58,25 @@ export default class GameView {
 
   setupLight() {
     let lightAmbient = new THREE.AmbientLight(0x666666, 3);
-    let lightSource = new THREE.PointLight(0x888888);
+    let lightSource = new THREE.PointLight(0x888888, 1);
 
-    lightSource.position.set(0, 40, 50);
+    lightSource.position.set(0, 30, 0);
+    lightAmbient.position.set(0, 30, 0);
 
     this.scene.add(lightAmbient);
     this.scene.add(lightSource);
   }
 
   setupGrid() {
-    let texturedSurfaceGeometry = new THREE.PlaneGeometry(gridWidth, gridWidth);
-    let texturedSurfaceMaterial = new THREE.MeshBasicMaterial({map: planeTexture});
-    let texturedSurface = new THREE.Mesh(texturedSurfaceGeometry, texturedSurfaceMaterial);
-    texturedSurface.rotation.x = -0.5 * Math.PI;
-    texturedSurface.position.y = -0.3;
-    this.scene.add(texturedSurface);
+    // let texturedSurfaceGeometry = new THREE.PlaneGeometry(gridWidth, gridWidth);
+    // let texturedSurfaceMaterial = new THREE.MeshBasicMaterial({map: planeTexture});
+    // let texturedSurface = new THREE.Mesh(texturedSurfaceGeometry, texturedSurfaceMaterial);
+    // texturedSurface.rotation.x = -0.5 * Math.PI;
+    // texturedSurface.position.y = -0.3;
+    // this.scene.add(texturedSurface);
 
     let grid = new THREE.GridHelper(gridWidth, gridSubDiv);
+    grid.position.y = -.4
     this.scene.add(grid);
 
     this.gridPanels = {};
@@ -87,12 +90,42 @@ export default class GameView {
       let plane = new THREE.Mesh(planeGeometry, planeMaterial);
       plane.rotation.x = -0.5 * Math.PI;
       plane.position.z = zPos;
-      plane.position.y = -0.2;
+      plane.position.y = 0;
       this.scene.add(plane);
       this.gridPanels[i] = plane;
 
       zPos += panelLength;
     }
+  }
+
+  setupGrassField() {
+    let textureUrl  = 'textures/grasslight-small.jpg'
+    let texture = new THREE.TextureLoader().load(textureUrl);
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    texture.repeat.y= gridSubDiv;
+    texture.repeat.x= gridSubDiv;
+    texture.anisotropy = this.renderer.getMaxAnisotropy()
+    // build object3d
+    let geometry  = new THREE.PlaneGeometry(gridWidth, gridWidth)
+    let material  = new THREE.MeshPhongMaterial({
+      map : texture
+    })
+    let plane  = new THREE.Mesh(geometry, material)
+    plane.rotateX(-Math.PI/2);
+    plane.position.y = -0.2;
+    this.scene.add(plane);
+
+    // let nTufts  = 2000;
+    // let positions = new Array(nTufts);
+    // for(let i = 0; i < nTufts; i++){
+    //   let position  = new THREE.Vector3();
+    //   position.x  = (Math.random()-0.5)*gridWidth;
+    //   position.z  = (Math.random()-0.5)*gridWidth;
+    //   positions[i]  = position;
+    // }
+    // let mesh  = THREEx.createGrassTufts(positions);
+    // this.scene.add(mesh);
   }
 
   checkGridIntersections() {
@@ -176,7 +209,11 @@ export default class GameView {
     moneyText.textContent = this.gameEngine.myPlayer.money;
     fpsText.textContent = this.calculateFPS(timestamp);
     
-    baseHealthText.textContent = Math.max(this.gameEngine.myPlayer.base.health, 0).toFixed(2) + " / " + this.gameEngine.myPlayer.base.maxHealth;
+    if(this.gameEngine.myPlayer.base !== null) {
+      baseHealthText.textContent = Math.max(this.gameEngine.myPlayer.base.health, 0).toFixed(2) + " / " + this.gameEngine.myPlayer.base.maxHealth;
+    } else {
+      baseHealthText.textContent = "0";
+    }
     
     minionBaseHealthText.textContent = Constants.minion.baseHealth + (Constants.minion.upgrades.health.amount * this.gameEngine.myPlayer.upgrades.minionBaseHealth);
     minionBaseAttackText.textContent = Constants.minion.baseAttack + (Constants.minion.upgrades.attack.amount * this.gameEngine.myPlayer.upgrades.minionBaseAttack);

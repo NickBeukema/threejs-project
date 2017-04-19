@@ -17,6 +17,7 @@ var paths = {
   index: 'src/index.html',
   appJS: 'src/js/app.js',
   geometry: 'src/geometry/*.json',
+  images: 'src/images/*.png',
   vendorJS: 'src/vendor/*.js',
   textures: 'src/textures/*.jpg',
   styles: 'src/styles/app.scss',
@@ -66,6 +67,11 @@ function geometryStreamProcess() {
       .pipe(gulp.dest('dist/geometry'));
 }
 
+function imagesStreamProcess() {
+  return gulp.src(paths.images)
+      .pipe(gulp.dest('dist/images'));
+}
+
 function cssStreamProcess() {
   return gulp.src(paths.styles)
     .pipe(sourcemaps.init())
@@ -84,10 +90,11 @@ gulp.task('prodBuild', function () {
   var faviconStream = faviconStreamProcess();
   var texturesStream = texturesStreamProcess();
   var geometryStream = geometryStreamProcess();
+  var imagesStream = imagesStreamProcess();
   var cssStream = cssStreamProcess();
 
   return gulp.src(paths.index)
-    .pipe(inject(series(vendorStream, appStream, faviconStream, geometryStream, texturesStream, cssStream), {
+    .pipe(inject(series(vendorStream, appStream, faviconStream, geometryStream, texturesStream, imagesStream, cssStream), {
       ignorePath: './dist/',
       addRootSlash: false
     }))
@@ -104,10 +111,11 @@ gulp.task('build', function () {
   var faviconStream = faviconStreamProcess();
   var texturesStream = texturesStreamProcess();
   var geometryStream = geometryStreamProcess();
+  var imagesStream = imagesStreamProcess();
   var cssStream = cssStreamProcess();
 
   return gulp.src(paths.index)
-    .pipe(inject(series(vendorStream, appStream, faviconStream, texturesStream, geometryStream, cssStream), {
+    .pipe(inject(series(vendorStream, appStream, faviconStream, texturesStream, geometryStream, imagesStream, cssStream), {
       ignorePath: './dist/',
       addRootSlash: false
     }))
