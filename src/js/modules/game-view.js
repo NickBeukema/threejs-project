@@ -68,12 +68,12 @@ export default class GameView {
   }
 
   setupGrid() {
-    // let texturedSurfaceGeometry = new THREE.PlaneGeometry(gridWidth, gridWidth);
-    // let texturedSurfaceMaterial = new THREE.MeshBasicMaterial({map: planeTexture});
-    // let texturedSurface = new THREE.Mesh(texturedSurfaceGeometry, texturedSurfaceMaterial);
-    // texturedSurface.rotation.x = -0.5 * Math.PI;
-    // texturedSurface.position.y = -0.3;
-    // this.scene.add(texturedSurface);
+     //let texturedSurfaceGeometry = new THREE.PlaneGeometry(gridWidth, gridWidth);
+     //let texturedSurfaceMaterial = new THREE.MeshBasicMaterial({map: planeTexture});
+     //let texturedSurface = new THREE.Mesh(texturedSurfaceGeometry, texturedSurfaceMaterial);
+     //texturedSurface.rotation.x = -0.5 * Math.PI;
+     //texturedSurface.position.y = -0.3;
+     //this.scene.add(texturedSurface);
 
     let grid = new THREE.GridHelper(gridWidth, gridSubDiv);
     grid.position.y = -.4
@@ -107,25 +107,26 @@ export default class GameView {
     texture.repeat.x= gridSubDiv;
     texture.anisotropy = this.renderer.getMaxAnisotropy()
     // build object3d
-    let geometry  = new THREE.PlaneGeometry(gridWidth, gridWidth)
+    let geometry  = new THREE.PlaneGeometry(gridWidth * 10, gridWidth * 10)
     let material  = new THREE.MeshPhongMaterial({
-      map : texture
+      map : texture,
+      shininess: 10
     })
     let plane  = new THREE.Mesh(geometry, material)
     plane.rotateX(-Math.PI/2);
     plane.position.y = -0.2;
     this.scene.add(plane);
 
-    // let nTufts  = 2000;
-    // let positions = new Array(nTufts);
-    // for(let i = 0; i < nTufts; i++){
-    //   let position  = new THREE.Vector3();
-    //   position.x  = (Math.random()-0.5)*gridWidth;
-    //   position.z  = (Math.random()-0.5)*gridWidth;
-    //   positions[i]  = position;
-    // }
-    // let mesh  = THREEx.createGrassTufts(positions);
-    // this.scene.add(mesh);
+     //let nTufts  = 2000;
+     //let positions = new Array(nTufts);
+     //for(let i = 0; i < nTufts; i++){
+       //let position  = new THREE.Vector3();
+       //position.x  = (Math.random()-0.5)*gridWidth;
+       //position.z  = (Math.random()-0.5)*gridWidth;
+       //positions[i]  = position;
+     //}
+     //let mesh  = THREEx.createGrassTufts(positions);
+     //this.scene.add(mesh);
   }
 
   checkGridIntersections() {
