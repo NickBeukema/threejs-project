@@ -35,6 +35,7 @@ export default class Archer {
     this.attackProperties = {
       lastAttack: 0
     };
+    this.textureLoader = new THREE.TextureLoader();
 
     this.attackSpeed = Constants.archer.baseAttackSpeed;
     this.arrowSpeed = Constants.archer.baseArrowSpeed;
@@ -165,8 +166,27 @@ export default class Archer {
 
 
   spawnArrow(target, timestamp, callback) {
-    let arrowG = new THREE.SphereGeometry(1, 10, 10);
-    let arrowMat = new THREE.MeshBasicMaterial({ color: 0x9C3724 });
+    let texture = this.textureLoader.load('textures/fireball.jpg', THREE.SphericalRefractionMapping);
+    let arrowG = new THREE.SphereGeometry(1, 32, 16);
+    let arrowMat = new THREE.MeshPhongMaterial({ color: 0xFFFFFF , map: texture, emissive: 0x440000 });
+
+
+    let faceVertexUvs = arrowG.faceVertexUvs[ 0 ];
+    for (let i = 0; i < faceVertexUvs.length; i ++) {
+
+      let uvs = faceVertexUvs[ i ];
+      let face = arrowG.faces[ i ];
+
+      for (let j = 0; j < 3; j ++) {
+
+        uvs[ j ].x = face.vertexNormals[ j ].x * 0.5 + 0.5;
+        uvs[ j ].y = face.vertexNormals[ j ].y * 0.5 + 0.5;
+
+      }
+
+    }
+
+
     let arrow = new THREE.Mesh(arrowG, arrowMat);
     arrow.name = "Arrow";
     this.scene.add(arrow);
@@ -204,7 +224,14 @@ export default class Archer {
       return (a * (delta * delta)) + (b * delta) + c;
     }
 
-    let m_x = target.viewObj.position.x - arrow.position.x;
+    let initialDistanceX = target.viewObj.position.x - arrow.position.x;
+    let distanceTargetWillTravelX = (target.speed/16) * this.arrowSpeed * -this.direction;
+    let m_x = initialDistanceX + distanceTargetWillTravelX;
+
+    console.log(m_x, arrow.position.x);
+    if(m_x * -this.direction > 0) {
+      m_x = this.direction * 5;
+    }
     let c_x = arrow.position.x;
 
     let xFunction = (delta) => {
@@ -245,6 +272,9 @@ export default class Archer {
       arrow.obj.position.y = arrow.yFunction(delta);
       arrow.obj.position.x = arrow.xFunction(delta);
       arrow.obj.position.z = arrow.zFunction(delta);
+      arrow.obj.rotation.y += 0.1;
+      arrow.obj.rotation.x += 0.1;
+
     });
   }
 

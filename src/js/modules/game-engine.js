@@ -42,10 +42,10 @@ export default class GameEngine {
       personality: "randomAI"
     });
 
-    // this.playerAI = new AI({
-    //   player: this.myPlayer,
-    //   personality: "randomAI"
-    // });
+     this.playerAI = new AI({
+       player: this.myPlayer,
+       personality: "randomAI"
+     });
 
 
     this.state.players = [ this.myPlayer, this.computer ];

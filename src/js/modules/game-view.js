@@ -174,6 +174,7 @@ export default class GameView {
 
   startFirstGame() {
     this.gameEngine.restart();
+    this.gameEngine.playerAI = null;
 
     this.hud.classList.remove('hud--hidden');
     this.hudUpgrade.classList.remove('hud--hidden');
