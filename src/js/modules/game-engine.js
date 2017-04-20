@@ -59,10 +59,7 @@ export default class GameEngine {
     })
   }
 
-  restart(difficulty=1, computers=1) {
-    while(this.colliderList.length > 0) {
-      this.colliderList.pop();
-    }
+  setPlayers(difficulty, computers) {
     if(computers === 0) {
       this.AI = null;
       this.playerAI = null;
@@ -91,6 +88,14 @@ export default class GameEngine {
     if(this.playerAI) {
       this.playerAI.setDifficulty(difficulty);
     }
+  }
+
+  restart(difficulty=1, computers=1) {
+    while(this.colliderList.length > 0) {
+      this.colliderList.pop();
+    }
+
+    this.setPlayers(difficulty, computers);
 
     this.state.players.forEach(player => {
       player.reset();

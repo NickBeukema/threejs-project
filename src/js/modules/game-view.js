@@ -172,9 +172,8 @@ export default class GameView {
     });
   }
 
-  startFirstGame() {
-    this.gameEngine.restart();
-    this.gameEngine.playerAI = null;
+  startFirstGame(difficulty=1, computers=1) {
+    this.gameEngine.restart(difficulty, computers);
 
     this.hud.classList.remove('hud--hidden');
     this.hudUpgrade.classList.remove('hud--hidden');

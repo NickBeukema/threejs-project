@@ -48,8 +48,7 @@ export function bindButtons(gameView, gameEngine) {
   });
 
   demoButton1.addEventListener('click', () => {
-    gameView.startFirstGame();
-    gameEngine.restart(1, 0);
+    gameView.startFirstGame(1, 0);
     closeMenu();
   });
 
