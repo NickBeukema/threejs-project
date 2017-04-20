@@ -42,10 +42,10 @@ export default class GameEngine {
       personality: "randomAI"
     });
 
-     this.playerAI = new AI({
-       player: this.myPlayer,
-       personality: "randomAI"
-     });
+    this.playerAI = new AI({
+      player: this.myPlayer,
+      personality: "randomAI"
+    });
 
 
     this.state.players = [ this.myPlayer, this.computer ];
@@ -59,10 +59,39 @@ export default class GameEngine {
     })
   }
 
-  restart() {
+  restart(difficulty=1, computers=1) {
     while(this.colliderList.length > 0) {
       this.colliderList.pop();
     }
+    if(computers === 0) {
+      this.AI = null;
+      this.playerAI = null;
+    } else if(computers === 1) {
+      this.AI = new AI({
+        player: this.computer,
+        personality: "randomAI"
+      });
+      this.playerAI = null;
+    } else if(computers === 2) {
+      this.AI = new AI({
+        player: this.computer,
+        personality: "randomAI"
+      });
+
+      this.playerAI = new AI({
+        player: this.myPlayer,
+        personality: "randomAI"
+      });
+    }
+
+    if(this.AI) {
+      this.AI.setDifficulty(difficulty);
+    }
+
+    if(this.playerAI) {
+      this.playerAI.setDifficulty(difficulty);
+    }
+
     this.state.players.forEach(player => {
       player.reset();
     });

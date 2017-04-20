@@ -3,6 +3,9 @@ let startSection = document.getElementById('startModal');
 let startButton = document.getElementById('startButton');
 let restartSection = document.getElementById('restartModal');
 let restartButton = document.getElementById('restartButton');
+let demoButton1 = document.getElementById('demoButton1');
+let demoButton2 = document.getElementById('demoButton2');
+let hardButton = document.getElementById('hardButton');
 let restartModalMessage = document.getElementById('restartModalMessage');
 
 function activateStartScreen() {
@@ -43,4 +46,21 @@ export function bindButtons(gameView, gameEngine) {
     gameEngine.restart();
     closeMenu();
   });
+
+  demoButton1.addEventListener('click', () => {
+    gameView.startFirstGame();
+    gameEngine.restart(1, 0);
+    closeMenu();
+  });
+
+  demoButton2.addEventListener('click', () => {
+    gameEngine.restart(1, 0);
+    closeMenu();
+  });
+
+  hardButton.addEventListener('click', () => {
+    gameEngine.restart(2, 1);
+    closeMenu();
+  });
+
 }

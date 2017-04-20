@@ -26,6 +26,24 @@ export default class AI {
     return timestamp - this.lastUpgrade > this.upgradeInterval;
   }
 
+  setDifficulty(difficulty) {
+    if(difficulty === 1) {
+      this.setupEasy();
+    } else if(difficulty === 2) {
+      this.setupHard();
+    }
+  }
+
+  setupEasy() {
+    this.spawnInterval = 1500;
+    this.upgradeInterval = 3000;
+  }
+
+  setupHard() {
+    this.spawnInterval = 325;
+    this.upgradeInterval = 1500;
+  }
+
   runLoop(timestamp, opponents) {
     if(this.canUpgrade(timestamp)) {
       this.applyUpgrades(this.checkUpgrades());
