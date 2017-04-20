@@ -1,5 +1,5 @@
 import { gridWidth,
-         gridLength,
+         gridHeight,
          gridSubDiv,
          minionBaseHealth,
          minionBaseAttack,
@@ -75,16 +75,16 @@ export default class GameView {
      //texturedSurface.position.y = -0.3;
      //this.scene.add(texturedSurface);
 
-    let grid = new THREE.GridHelper(gridWidth, gridSubDiv);
+    let grid = new THREE.GridHelper(gridWidth, gridHeight);
     grid.position.y = -.4
     this.scene.add(grid);
 
     this.gridPanels = {};
 
-    let panelLength = gridWidth / gridSubDiv;
+    let panelLength = gridWidth/gridHeight;
     let zPos = ((gridWidth / 2) - panelLength / 2) * -1;
 
-    for(let i = 0; i < gridSubDiv; i++) {
+    for(let i = 0; i < gridHeight; i++) {
       let planeGeometry = new THREE.PlaneGeometry(gridWidth, panelLength);
       let planeMaterial = new THREE.MeshBasicMaterial({transparent: true, opacity: 0});
       let plane = new THREE.Mesh(planeGeometry, planeMaterial);
