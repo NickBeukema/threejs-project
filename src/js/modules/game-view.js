@@ -13,7 +13,7 @@ import Constants from './constants';
 import { bindButtons } from './menu-screen';
 
 // UI Elements
-let scoreText, moneyText, fpsText, baseHealthText, minionBaseHealthText ,minionBaseAttackText ,minionBaseAttackSpeedText ,archerBaseAttackText ,archerBaseAttackSpeedText;
+let scoreText, moneyText, poppulationText, baseHealthText, minionBaseHealthText ,minionBaseAttackText ,minionBaseAttackSpeedText ,archerBaseAttackText ,archerBaseAttackSpeedText;
 let baseHealthUpgrade, minionBaseHealthUpgrade ,minionBaseAttackUpgrade ,minionBaseAttackSpeedUpgrade ,archerBaseAttackUpgrade ,archerBaseAttackSpeedUpgrade;
 
 
@@ -117,16 +117,16 @@ export default class GameView {
     plane.position.y = -0.2;
     this.scene.add(plane);
 
-     //let nTufts  = 2000;
-     //let positions = new Array(nTufts);
-     //for(let i = 0; i < nTufts; i++){
-       //let position  = new THREE.Vector3();
-       //position.x  = (Math.random()-0.5)*gridWidth;
-       //position.z  = (Math.random()-0.5)*gridWidth;
-       //positions[i]  = position;
-     //}
-     //let mesh  = THREEx.createGrassTufts(positions);
-     //this.scene.add(mesh);
+     // let nTufts  = 2000;
+     // let positions = new Array(nTufts);
+     // for(let i = 0; i < nTufts; i++){
+     //   let position  = new THREE.Vector3();
+     //   position.x  = (Math.random()-0.5)*gridWidth;
+     //   position.z  = (Math.random()-0.5)*gridWidth;
+     //   positions[i]  = position;
+     // }
+     // let mesh  = THREEx.createGrassTufts(positions);
+     // this.scene.add(mesh);
   }
 
   checkGridIntersections() {
@@ -208,7 +208,7 @@ export default class GameView {
   updateUI(timestamp) {
     scoreText.textContent = this.gameEngine.myPlayer.score;
     moneyText.textContent = this.gameEngine.myPlayer.money;
-    fpsText.textContent = this.calculateFPS(timestamp);
+    poppulationText.textContent = this.gameEngine.myPlayer.minions.length + "/" + this.gameEngine.myPlayer.poppulationCap;
     
     if(this.gameEngine.myPlayer.base !== null) {
       baseHealthText.textContent = Math.max(this.gameEngine.myPlayer.base.health, 0).toFixed(2) + " / " + this.gameEngine.myPlayer.base.maxHealth;
@@ -236,7 +236,7 @@ export default class GameView {
   initializeHudTexts() {
     scoreText = document.getElementById('score');
     moneyText = document.getElementById('money');
-    fpsText = document.getElementById('fps');
+    poppulationText = document.getElementById('poppulation');
     baseHealthText = document.getElementById('baseHealth');
     minionBaseHealthText = document.getElementById('minionBaseHealth');
     minionBaseAttackText = document.getElementById('minionBaseAttack');
@@ -247,62 +247,35 @@ export default class GameView {
 
   initializeUpgradeButtons() {
     let gameView = this;
+    
     baseHealthUpgrade =  document.getElementById('baseHealthUpgrade');
     baseHealthUpgrade.addEventListener('click', function() {
-      if(gameView.gameEngine.myPlayer.money > Constants.base.upgrades.health.cost) {
-        gameView.gameEngine.myPlayer.base.maxHealth += Constants.base.upgrades.health.amount;
-        gameView.gameEngine.myPlayer.base.health += Constants.base.upgrades.health.amount;
-        gameView.gameEngine.myPlayer.money -= Constants.base.upgrades.health.cost;
-      }
+      gameView.gameEngine.myPlayer.upgradeBaseHealth();
     });
 
     minionBaseHealthUpgrade =  document.getElementById('minionBaseHealthUpgrade');
     minionBaseHealthUpgrade.addEventListener('click', function() {
-      if(gameView.gameEngine.myPlayer.money > Constants.minion.upgrades.health.cost) {
-        gameView.gameEngine.myPlayer.upgrades.minionBaseHealth++;
-        gameView.gameEngine.myPlayer.money -= Constants.minion.upgrades.health.cost;
-      }
+      gameView.gameEngine.myPlayer.upgradeMinionHealth();
     });
 
     minionBaseAttackUpgrade =  document.getElementById('minionBaseAttackUpgrade');
     minionBaseAttackUpgrade.addEventListener('click', function() {
-      if(gameView.gameEngine.myPlayer.money > Constants.minion.upgrades.attack.cost) {
-        gameView.gameEngine.myPlayer.upgrades.minionBaseAttack++;
-        gameView.gameEngine.myPlayer.money -= Constants.minion.upgrades.attack.cost;
-      }
+      gameView.gameEngine.myPlayer.upgradeMinionAttack();
     });
 
     minionBaseAttackSpeedUpgrade =  document.getElementById('minionBaseAttackSpeedUpgrade');
     minionBaseAttackSpeedUpgrade.addEventListener('click', function() {
-      if(gameView.gameEngine.myPlayer.money > Constants.minion.upgrades.attackSpeed.cost) {
-        gameView.gameEngine.myPlayer.upgrades.minionBaseAttackSpeed++;
-        gameView.gameEngine.myPlayer.money -= Constants.minion.upgrades.attackSpeed.cost;
-      }
+      gameView.gameEngine.myPlayer.upgradeMinionAttackSpeed();
     });
 
     archerBaseAttackUpgrade =  document.getElementById('archerBaseAttackUpgrade');
     archerBaseAttackUpgrade.addEventListener('click', function() {
-      if(gameView.gameEngine.myPlayer.money > Constants.archer.upgrades.attack.cost) {
-        gameView.gameEngine.myPlayer.archers.forEach((archer) => {
-          archer.attackStrength += Constants.archer.upgrades.attack.amount;
-        })
-
-        gameView.gameEngine.myPlayer.upgrades.archerBaseAttack++;
-        gameView.gameEngine.myPlayer.money -= Constants.archer.upgrades.attack.cost;
-      }
+      gameView.gameEngine.myPlayer.upgradeWizardAttack();
     });
 
     archerBaseAttackSpeedUpgrade =  document.getElementById('archerBaseAttackSpeedUpgrade');
     archerBaseAttackSpeedUpgrade.addEventListener('click', function() {
-      if(gameView.gameEngine.myPlayer.money > Constants.archer.upgrades.attackSpeed.cost) {
-        gameView.gameEngine.myPlayer.archers.forEach((archer) => {
-          archer.attackSpeed -= Constants.archer.upgrades.attackSpeed.amount;
-          archer.arrowSpeed -= Constants.archer.upgrades.attackSpeed.amount;
-        })
-
-        gameView.gameEngine.myPlayer.upgrades.archerBaseAttackSpeed++;
-        gameView.gameEngine.myPlayer.money -= Constants.archer.upgrades.attackSpeed.cost;
-      }
+      gameView.gameEngine.myPlayer.upgradeWizardAttackSpeed();
     });
   }
 } 

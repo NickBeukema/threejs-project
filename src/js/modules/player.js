@@ -2,6 +2,7 @@ import Minion from './minion';
 import Archer from './archer';
 import Base from './base';
 import { gridWidth, gridSubDiv } from './constants';
+import Constants from './constants';
 
 export default class Player {
 
@@ -14,6 +15,7 @@ export default class Player {
     this.scene = args.scene;
     this.minionId = 0;
     this.spawnPos = -gridWidth / 2 * this.direction;
+    this.poppulationCap = 30;
 
     this.setUpgradeValues();
     this.loader = new THREE.ObjectLoader();
@@ -63,34 +65,36 @@ export default class Player {
   }
 
   spawnMinion(index) {
-    if(this.money >= this.minionCost) {
-      if(!this.gameOver) {
-        this.money -= this.minionCost;
-      }
-
-      let minion = new Minion({
-        id: this.minionId++,
-        healthUpgrade: this.upgrades.minionBaseHealth,
-        attackUpgrade: this.upgrades.minionBaseAttack,
-        attackSpeedUpgrade: this.upgrades.minionBaseAttackSpeed,
-        playerId: this.id,
-        direction: this.direction,
-        startingZ: index,
-        colliderList: this.colliderList,
-        player: this
-      });
-
-      this.minions.push(minion);
-      this.loader.load('./geometry/model.json', (obj) => {
-        obj.position.y = -4;
-        minion.viewObj.add(obj);
-
-        if(minion.direction === -1) {
-          minion.viewObj.children[1].rotation.y = Math.PI;
+    if(this.minions.length <= this.poppulationCap) {
+      if(this.money >= this.minionCost) {
+        if(!this.gameOver) {
+          this.money -= this.minionCost;
         }
 
-        this.scene.add(minion.viewObj);
-      });
+        let minion = new Minion({
+          id: this.minionId++,
+          healthUpgrade: this.upgrades.minionBaseHealth,
+          attackUpgrade: this.upgrades.minionBaseAttack,
+          attackSpeedUpgrade: this.upgrades.minionBaseAttackSpeed,
+          playerId: this.id,
+          direction: this.direction,
+          startingZ: index,
+          colliderList: this.colliderList,
+          player: this
+        });
+
+        this.minions.push(minion);
+        this.loader.load('./geometry/model.json', (obj) => {
+          obj.position.y = -4;
+          minion.viewObj.add(obj);
+
+          if(minion.direction === -1) {
+            minion.viewObj.children[1].rotation.y = Math.PI;
+          }
+
+          this.scene.add(minion.viewObj);
+        });
+      }
     }
   }
 
@@ -194,11 +198,113 @@ export default class Player {
 
   setUpgradeValues() {
     this.upgrades = {
+      baseHealth: 0,
       minionBaseHealth: 0,
       minionBaseAttack: 0,
       minionBaseAttackSpeed: 0,
       archerBaseAttack: 0,
       archerBaseAttackSpeed: 0
+    }
+  }
+
+  getBaseHealthUpgradeCost() {
+    return Constants.base.upgrades.health.cost * (this.upgrades.baseHealth + 1);
+  }
+
+  canUpgradeBaseHealth() {
+    return this.money > this.getBaseHealthUpgradeCost();
+  }
+
+  upgradeBaseHealth() {
+    if(this.canUpgradeBaseHealth()) {
+      this.upgrades.baseHealth++;
+      this.base.maxHealth += Constants.base.upgrades.health.amount;
+      this.base.health += Constants.base.upgrades.health.amount;
+      this.money -= Constants.base.upgrades.health.cost * this.upgrades.baseHealth;
+    }
+  }
+
+  getMinionHealthUpgradeCost() {
+    return Constants.minion.upgrades.health.cost * (this.upgrades.minionBaseHealth + 1);
+  }
+
+  canUpgradeMinionHealth() {
+    return this.money > this.getMinionHealthUpgradeCost();
+  }
+
+  upgradeMinionHealth() {
+    if(this.canUpgradeMinionHealth()) {
+      this.upgrades.minionBaseHealth++;
+      this.money -= Constants.minion.upgrades.health.cost * this.upgrades.minionBaseHealth;
+    }
+  }
+
+  getMinionAttackUpgradeCost() {
+    return Constants.minion.upgrades.attack.cost * (this.upgrades.minionBaseAttack + 1);
+  }
+
+  canUpgradeMinionAttack() {
+    return this.money > this.getMinionAttackUpgradeCost();
+  }
+
+  upgradeMinionAttack() {
+    if(this.canUpgradeMinionAttack()) {
+      this.upgrades.minionBaseAttack++;
+      this.money -= Constants.minion.upgrades.attack.cost * this.upgrades.minionBaseAttack;
+    }
+  }
+
+  getMinionAttackSpeedUpgradeCost() {
+    return Constants.minion.upgrades.attackSpeed.cost * (this.upgrades.minionBaseAttackSpeed + 1);
+  }
+
+  canUpgradeMinionAttackSpeed() {
+    return this.money > this.getMinionAttackSpeedUpgradeCost();
+  }
+
+  upgradeMinionAttackSpeed() {
+    if(this.canUpgradeMinionAttackSpeed()) {
+      this.upgrades.minionBaseAttackSpeed++;
+      this.money -= Constants.minion.upgrades.attackSpeed.cost * this.upgrades.minionBaseAttackSpeed++;
+    }
+  }
+
+  getWizardAttackUpgradeCost() {
+    return Constants.archer.upgrades.attack.cost * (this.upgrades.archerBaseAttack + 1);
+  }
+
+  canUpgradeWizardAttack() {
+    return this.money > this.getWizardAttackUpgradeCost();
+  }
+
+  upgradeWizardAttack() {
+    if(this.canUpgradeWizardAttack()) {
+      this.archers.forEach((archer) => {
+        archer.attackStrength += Constants.archer.upgrades.attack.amount;
+      });
+
+      this.upgrades.archerBaseAttack++;
+      this.money -= Constants.archer.upgrades.attack.cost * this.upgrades.archerBaseAttack;
+    }
+  }
+
+  getWizardAttackSpeedUpgradeCost() {
+    return Constants.archer.upgrades.attackSpeed.cost * (this.upgrades.archerBaseAttackSpeed + 1) ;
+  }
+
+  canUpgradeWizardAttackSpeed() {
+    return this.money > this.getWizardAttackSpeedUpgradeCost();
+  }
+
+  upgradeWizardAttackSpeed() {
+    if(this.canUpgradeWizardAttackSpeed()) {
+      this.archers.forEach((archer) => {
+        archer.attackSpeed -= Constants.archer.upgrades.attackSpeed.amount;
+        archer.arrowSpeed -= Constants.archer.upgrades.attackSpeed.amount;
+      });
+
+      this.upgrades.archerBaseAttackSpeed++;
+      this.money -= Constants.archer.upgrades.attackSpeed.cost * this.upgrades.archerBaseAttackSpeed;
     }
   }
 }

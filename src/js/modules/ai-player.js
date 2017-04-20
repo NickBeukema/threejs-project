@@ -1,139 +1,45 @@
-Array.prototype.unique = function() {
-  return this.filter(function (value, index, self) { 
-    return self.indexOf(value) === index;
-  });
-}
-
 import { gridWidth, gridLength, gridSubDiv } from './constants';
+import smartAI from '../ai/smart-ai';
+import defensiveAI from '../ai/defensive-ai';
+import randomAI from '../ai/random-ai';
 
 export default class AI {
 
   constructor(args) {
+    this.smartAI = smartAI;
+    this.defensiveAI = defensiveAI;
+    this.randomAI = randomAI;
     this.determineAIFunction(args.personality);
     this.player = args.player;
-    this.spawnInterval = 400;
+    this.spawnInterval = 350;
+    this.lastUpgrade = 0;
+    this.upgradeInterval = 2000;
     this.lastSpawn = 0;
-    this.poppulationLimit = 15;
+    this.poppulationLimit = 30;
   }
 
   canSpawn(timestamp) {
-    return timestamp - this.lastSpawn > this.spawnInterval;
+    return timestamp - this.lastSpawn > this.spawnInterval && this.player.minions.length < this.poppulationLimit;
+  }
+
+  canUpgrade(timestamp) {
+    return timestamp - this.lastUpgrade > this.upgradeInterval;
   }
 
   runLoop(timestamp, opponents) {
+    if(this.canUpgrade(timestamp)) {
+      this.applyUpgrades(this.checkUpgrades());
+      this.lastUpgrade = timestamp;
+    }
+
     if(!this.canSpawn(timestamp)) { return; }
 
-    let spawnIndex = this.AIFunction(opponents, this.player.minions);
+    let spawnIndex = this.AIFunction(opponents, this.player.minions, this.player.spawnPos);
 
-    if(spawnIndex >= 0 && this.player.minions.length < this.poppulationLimit) {
+    if(spawnIndex >= 0) {
       this.player.spawnMinion(spawnIndex);
       this.lastSpawn = timestamp;
     }
-  }
-
-  randomAI(opponents) {
-    return Math.floor(Math.random() * gridSubDiv);
-  }
-
-  nicksAI(opponents, friendlies) {
-    let startingPos = this.player.spawnPos;
-
-    let friendlyMap = friendlies.map(m => {
-      return {
-        row: m.startingZ,
-        distance: m.getPosition().x - startingPos
-      }
-    });
-
-    let opponentMap = opponents.map(m => {
-
-      let distance = startingPos - m.getPosition().x;
-      return {
-        row: m.startingZ,
-        distance: distance
-      };
-    });
-
-    let rowArray = [];
-    for(let i = 0; i < gridSubDiv; i++) { rowArray.push(i); }
-
-    let decision = {
-      hasFriendlies: [],
-      closestIndex: -1,
-      closestVal: 99999,
-      distanceTies: []
-
-    };
-
-    friendlyMap.forEach((val, idx) => {
-      decision.hasFriendlies.push(val.row);
-    });
-
-
-    opponentMap.forEach((val, idx) => {
-      if(val.distance < decision.closestVal) {
-        decision.closestIndex = val.row;
-        decision.closestVal = val.distance;
-
-        if(decision.distanceTies.length > 0) {
-          decision.distanceTies.length = 0;
-        }
-      } else if(val.distance === decision.closestVal) {
-        decision.distanceTies.push(val.row);
-      }
-    });
-
-    decision.distanceTies.push(decision.closestIndex);
-    decision.hasFriendlies = decision.hasFriendlies.unique();
-
-    let fullIdxArr = rowArray.slice(0);
-
-    decision.gaps = fullIdxArr.filter(x => {
-      return decision.hasFriendlies.indexOf(x) < 0;
-    });
-
-
-    //if(friendlies.length > 3) {
-      //friendlies[2].viewObj.position.z += 1;
-    //}
-
-
-    let arrayToUse;
-    if(decision.closestVal < gridWidth/2) {
-      arrayToUse = decision.distanceTies;
-    } else {
-      arrayToUse = decision.gaps;
-    }
-
-    let arrIdx = Math.floor(Math.random() * arrayToUse.length);
-    return arrayToUse[arrIdx];
-
-  }
-
-  defensiveAI(opponents) {
-    let map = {};
-    for(let i = 0; i < gridSubDiv; i++) {
-      map[i] = 0;
-    }
-
-    opponents.forEach((enemy) => {
-      map[enemy.startingZ]--;
-    });
-
-    this.player.minions.forEach((minion) => {
-      map[minion.startingZ]++
-    });
-
-    let spawnIndex = -1;
-    let spawnValue = 100000;
-    Object.values(map).forEach((val, index) => {
-      if(val < spawnValue) {
-        spawnValue = val;
-        spawnIndex = index
-      }
-    });
-
-    return spawnIndex;
   }
 
   determineAIFunction(personality) {
@@ -142,5 +48,45 @@ export default class AI {
     } else {
       this.AIFunction = this["randomAI"];
     }
+  }
+
+  //check all upgradeCosts to see if any can be upgrades returns a list of what can be upgraded and their cost
+  checkUpgrades() {
+    let upgrades = [];
+
+    if(this.player.canUpgradeBaseHealth()) {
+      upgrades.push({name: "upgradeBaseHealth", cost:this.player.getBaseHealthUpgradeCost()});
+    }
+
+    if(this.player.canUpgradeMinionHealth()) {
+      upgrades.push({name: "upgradeMinionHealth", cost: this.player.getMinionHealthUpgradeCost()});
+    }
+
+    if(this.player.canUpgradeMinionAttack()) {
+      upgrades.push({name: "upgradeMinionAttack", cost: this.player.getMinionAttackUpgradeCost()});
+    }
+
+    if(this.player.canUpgradeMinionAttackSpeed()) {
+      upgrades.push({name: "upgradeMinionAttackSpeed", cost: this.player.getMinionAttackSpeedUpgradeCost()});
+    }
+
+    if(this.player.canUpgradeWizardAttack()) {
+      upgrades.push({name: "upgradeWizardAttack", cost: this.player.getWizardAttackUpgradeCost()});
+    }
+
+    if(this.player.canUpgradeWizardAttackSpeed()) {
+      upgrades.push({name: "upgradeWizardAttackSpeed", cost: this.player.getWizardAttackSpeedUpgradeCost()});
+    }
+    
+    return upgrades;
+  }
+
+  applyUpgrades(upgrades) {
+    upgrades.forEach((upgrade) => {
+      if((this.player.money / 2) > upgrade.cost && this.player.money > 750) {
+        let fn = this.player[upgrade.name];
+        fn.apply(this.player);
+      }
+    });
   }
 }

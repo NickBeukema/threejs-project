@@ -18,7 +18,7 @@ let minion = {
 		},
 		attackSpeed: {
 			cost: 100,
-			amount: 10
+			amount: 25
 		}
 	}
 };
@@ -34,17 +34,17 @@ let base = {
 };
 
 let archer = {
-	baseAttack: 1,
+	baseAttack: 5,
 	baseAttackSpeed: 1000,
 	baseArrowSpeed: 1000,
 	upgrades: {
 		attack: {
 			cost: 50,
-			amount: 1,
+			amount: 4,
 		},
 		attackSpeed: {
 			cost: 100,
-			amount: 10,
+			amount: 50,
 		}
 	}
 }
