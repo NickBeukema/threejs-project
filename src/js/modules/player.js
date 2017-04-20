@@ -65,7 +65,7 @@ export default class Player {
   }
 
   spawnMinion(index) {
-    if(this.minions.length <= this.poppulationCap) {
+    if(this.minions.length < this.poppulationCap) {
       if(this.money >= this.minionCost) {
         if(!this.gameOver) {
           this.money -= this.minionCost;
