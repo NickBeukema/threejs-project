@@ -78,7 +78,7 @@ export default class Base {
       this.baseWidth + this.hitBoxBuffer 
     );
 
-    let hitMaterial = new THREE.MeshBasicMaterial({color: 0x00ffff, transparent: true, opacity: hitBoxOpacity });
+    let hitMaterial = new THREE.MeshBasicMaterial({color: 0x00ffff, transparent: true, opacity: hitBoxOpacity, depthWrite: false });
     let hitMesh = new THREE.Mesh(hitGeometry, hitMaterial);
 
     this.healthBar = this.initializeHealthBar();
