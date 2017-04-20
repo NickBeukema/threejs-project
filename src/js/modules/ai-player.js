@@ -11,9 +11,9 @@ export default class AI {
     this.randomAI = randomAI;
     this.determineAIFunction(args.personality);
     this.player = args.player;
-    this.spawnInterval = 350;
+    this.spawnInterval = 325;
     this.lastUpgrade = 0;
-    this.upgradeInterval = 2000;
+    this.upgradeInterval = 1500;
     this.lastSpawn = 0;
     this.poppulationLimit = 30;
   }
@@ -83,7 +83,7 @@ export default class AI {
 
   applyUpgrades(upgrades) {
     upgrades.forEach((upgrade) => {
-      if((this.player.money / 2) > upgrade.cost && this.player.money > 750) {
+      if((this.player.money / 1.5) > upgrade.cost && this.player.money > 750) {
         let fn = this.player[upgrade.name];
         fn.apply(this.player);
       }
